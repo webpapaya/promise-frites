@@ -15,7 +15,16 @@ import {
   waitAtLeast,
   timeoutAfter,
   debug,
+  retry,
 } from 'promise-frites';
+
+// retry
+const apiCall = () => { // a brittle api call };
+const retry3Times = retry(3);
+Promise.resolve()
+  .then(retry3Times(apiCall))
+  .then((value) => console.log(value))
+  .catch((error) => console.log(error));
 
 // ignoreReturnFor
 Promise.resolve()
