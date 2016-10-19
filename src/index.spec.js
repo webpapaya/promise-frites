@@ -6,7 +6,7 @@ import {
   waitAtLeastSeconds,
   parallel,
   timeoutAfter,
-debug
+  retry,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -83,38 +83,31 @@ describe('timeoutAfter', () => {
 });
 
 
-const _retry = (times, fn, resolve, reject) => {
-  if (times <= 0) { return reject('Error'); }
-  Promise.resolve()
-    .then(fn)
-    .then(resolve)
-    .catch(() => _retry(times - 1, fn, resolve, reject));
-};
-
-const retry = (times) => (fn) => (...args) => {
-  return new Promise((resolve, reject) => {
-    _retry(times, () => fn(...args), resolve, reject);
-  });
-};
-
 describe('retry', () => {
-  const createBrittleApi = () => {
+  const createBrittleApi = (resolveOnNthTime) => {
     let retries = 0;
     return () => {
       retries+=1;
-      return retries === 3
+      return retries === resolveOnNthTime
         ? Promise.resolve('success')
         : Promise.reject('error');
     };
   };
 
   it('retries 3 times', () => {
-    const apiCall = createBrittleApi();
+    const apiCall = createBrittleApi(3);
     const retry3Times = retry(3);
     return Promise.resolve()
       .then(retry3Times(apiCall))
       .then((value) => assertThat(value, equalTo('success')));
   });
+
+  it('fails when promise couldn\'t be resolved', () => {
+    const apiCall = createBrittleApi(4);
+    const retry3Times = retry(3);
+    return Promise.resolve()
+      .then(retry3Times(apiCall))
+      .catch(({ message }) =>
+        assertThat(message, equalTo('Couldn\'t resolve promise after 3 retries.')));
+  });
 });
-
-
