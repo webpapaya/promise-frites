@@ -3,11 +3,11 @@ export const ignoreReturnFor = (fn) => (arg) => {
   return arg;
 };
 
-export const debug = ignoreReturnFor((arg) => console.log(arg));
+export const debug = ignoreReturnFor((arg) => console.log(arg)); // eslint-disable-line  no-console
 
 export const rethrowError = (fn) => (error) => Promise.resolve()
   .then(() => fn(error))
-  .then(() => { throw error });
+  .then(() => { throw error; });
 
 export const delay = (seconds) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));

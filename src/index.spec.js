@@ -18,11 +18,11 @@ describe('ignoreReturnFor', () => {
 
 describe('rethrowError', () => {
   it('ignores return value', () => Promise.resolve()
-    .then(() => { throw 'my error'; })
+    .then(() => { throw new Error('my error'); })
     .catch(rethrowError((error) => error))
     .then(() => assertThat(false, equalTo(true)))
     .catch((error) =>
-      assertThat(error, equalTo('my error'))));
+      assertThat(error.message, equalTo('my error'))));
 });
 
 describe('waitAtLeast', () => {
@@ -68,7 +68,7 @@ describe('timeoutAfter', () => {
       return Promise.resolve()
         .then(timeoutFast(() => 'success'))
         .then((result) => assertThat(result, equalTo('success')))
-        .catch((error) => assertThat(false, equalTo(true)));
+        .catch(() => assertThat(false, equalTo(true)));
     });
 
     it('AND promise is passed in', () => {
@@ -76,12 +76,7 @@ describe('timeoutAfter', () => {
       return Promise.resolve()
         .then(timeoutFast(() => Promise.resolve('success')))
         .then((result) => assertThat(result, equalTo('success')))
-        .catch((error) => assertThat(false, equalTo(true)));
+        .catch(() => assertThat(false, equalTo(true)));
     });
   });
 });
-
-
-
-
-

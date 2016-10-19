@@ -1,8 +1,8 @@
 # Promise Frites
 
-![Image from Wikipedia](https://raw.githubusercontent.com/webpapaya/promise-frites/master/assets/promise-frites.jpg)
-
 Promise frites is a collection of decorators to be used with es6 promises.
+
+![Image from Wikipedia](https://raw.githubusercontent.com/webpapaya/promise-frites/master/assets/promise-frites.jpg)
 
 ## Usage
 
