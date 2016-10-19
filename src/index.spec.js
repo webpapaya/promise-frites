@@ -82,12 +82,11 @@ describe('timeoutAfter', () => {
   });
 });
 
-
 describe('retry', () => {
   const createBrittleApi = (resolveOnNthTime) => {
     let retries = 0;
     return () => {
-      retries+=1;
+      retries += 1;
       return retries === resolveOnNthTime
         ? Promise.resolve('success')
         : Promise.reject('error');

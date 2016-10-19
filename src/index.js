@@ -40,6 +40,6 @@ export const retry = (times) => (fn) => (...args) => {
   return new Promise((resolve, reject) => {
     _retry(times, () => fn(...args), resolve, reject);
   }).catch(() => {
-    throw new Error(`Couldn't resolve promise after ${times} retries.`)
+    throw new Error(`Couldn't resolve promise after ${times} retries.`);
   });
 };
