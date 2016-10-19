@@ -6,6 +6,7 @@ import {
   waitAtLeastSeconds,
   parallel,
   timeoutAfter,
+debug
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -80,3 +81,40 @@ describe('timeoutAfter', () => {
     });
   });
 });
+
+
+const _retry = (times, fn, resolve, reject) => {
+  if (times <= 0) { return reject('Error'); }
+  Promise.resolve()
+    .then(fn)
+    .then(resolve)
+    .catch(() => _retry(times - 1, fn, resolve, reject));
+};
+
+const retry = (times) => (fn) => (...args) => {
+  return new Promise((resolve, reject) => {
+    _retry(times, () => fn(...args), resolve, reject);
+  });
+};
+
+describe('retry', () => {
+  const createBrittleApi = () => {
+    let retries = 0;
+    return () => {
+      retries+=1;
+      return retries === 3
+        ? Promise.resolve('success')
+        : Promise.reject('error');
+    };
+  };
+
+  it('retries 3 times', () => {
+    const apiCall = createBrittleApi();
+    const retry3Times = retry(3);
+    return Promise.resolve()
+      .then(retry3Times(apiCall))
+      .then((value) => assertThat(value, equalTo('success')));
+  });
+});
+
+
