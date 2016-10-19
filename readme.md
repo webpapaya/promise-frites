@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/webpapaya/promise-frites.svg?branch=master)](https://travis-ci.org/webpapaya/promise-frites)
+
 # Promise Frites
 
 Promise frites is a collection of decorators to be used with es6 promises.
