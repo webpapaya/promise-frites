@@ -5,7 +5,7 @@ import {
   rethrowError,
   waitAtLeastSeconds,
   parallel,
-  timeoutAfter
+  timeoutAfter,
 } from './index';
 
 describe('ignoreReturnFor', () => {

@@ -7,6 +7,14 @@ Promise frites is a collection of decorators to be used with es6 promises.
 ## Usage
 
 ```js
+import {
+  ignoreReturnFor,
+  rethrowError,  
+  waitAtLeast,
+  timeoutAfter,
+  debug,
+} from 'promise-frites';
+
 // ignoreReturnFor
 Promise.resolve()
   .then(() => '1 value')
