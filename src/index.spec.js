@@ -1,4 +1,4 @@
-import { assertThat, equalTo } from 'hamjest';
+import { assertThat, equalTo, greaterThanOrEqualTo } from 'hamjest';
 import {
   delay,
   ignoreReturnFor,
@@ -33,7 +33,7 @@ describe('waitAtLeast', () => {
       .then(waitAtLeastSeconds(0.015)(() => {}))
       .then(() => {
         const timeDifference = new Date() - startTime;
-        assertThat(timeDifference >= 10, equalTo(true));
+        assertThat(timeDifference, greaterThanOrEqualTo(14));
       });
   });
 });
