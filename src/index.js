@@ -43,3 +43,7 @@ export const retry = (times) => (fn) => (...args) => {
     throw new Error(`Couldn't resolve promise after ${times} retries.`);
   });
 };
+
+export const ignoreRejectionFor = (fn) => (arg) => Promise.resolve()
+  .then(() => fn(arg))
+  .catch((result) => result);
