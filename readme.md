@@ -14,6 +14,7 @@ import {
   rethrowError,  
   waitAtLeast,
   timeoutAfter,
+  ignoreRejectionFor,
   debug,
   retry,
 } from 'promise-frites';
@@ -57,6 +58,12 @@ Promise.resolve()
   .then(timeoutAfter1Second(apiCall))
   .catch((error) => error === 'timeout');
   
+// ignoreRejectionFor
+const logToRemote = () => Promise.reject('Api Error');
+Promise.resolve()
+  .then(ignoreRejectionFor(logToRemote))
+  .then((value) => assertThat(value, equalTo('Api Error')));
+
 // debug
 Promise.resolve()
   .then(() => 'my value')
