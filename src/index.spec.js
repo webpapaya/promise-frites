@@ -136,7 +136,12 @@ const executeWhenUnresponsive = (executionList) => {
       return setTimeout(executionList[duration], parseFloat(duration));
     });
 
-    return fn(arg);
+    const clearSchedule = () =>
+      schedule.forEach((timeoutId) => clearTimeout(timeoutId));
+
+    return fn(arg)
+      .then(ignoreReturnFor(clearSchedule))
+      .catch(rethrowError(clearSchedule));
   }
 };
 
@@ -159,6 +164,41 @@ describe.only('executeWhenUnresponsive', () => {
         assertThat(fnAfter20msWasCalled, equalTo(true));
       });
   });
+
+  it('doesn\'t execute fn when promise is resolved fast', () => {
+    let fnAfter10msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      20: () => { console.log(1234); fnAfter10msWasCalled = true },
+    });
+
+    const longLastingPromise = () =>
+      new Promise((resolve) => setTimeout(() => resolve('Success'), 10));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then((message) => {
+        assertThat(message, equalTo('Success'));
+        assertThat(fnAfter10msWasCalled, equalTo(false));
+      });
+  });
+
+  it('doesn\'t execute fn when promise is rejected fast', () => {
+    let fnAfter10msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      20: () => { console.log(1234); fnAfter10msWasCalled = true },
+    });
+
+    const longLastingPromise = () =>
+      new Promise((_resolve, reject) => setTimeout(() => reject('Error'), 10));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => {
+        assertThat(error, equalTo('Error'));
+        assertThat(fnAfter10msWasCalled, equalTo(false));
+      });
+  });
 });
-
-
