@@ -131,16 +131,14 @@ describe('ignoreRejectionFor', () => {
   });
 });
 
-
-
 describe('executeWhenUnresponsive', () => {
   it('executes given functions', () => {
     let fnAfter10msWasCalled = false;
     let fnAfter20msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      0.01: () => { fnAfter10msWasCalled = true },
-      0.02: () => { fnAfter20msWasCalled = true },
+      0.01: () => { fnAfter10msWasCalled = true; },
+      0.02: () => { fnAfter20msWasCalled = true; },
     });
 
     const longLastingPromise = () => new Promise((resolve) => setTimeout(resolve, 30));
@@ -157,7 +155,7 @@ describe('executeWhenUnresponsive', () => {
     let fnAfter10msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      0.02: () => { console.log(1234); fnAfter10msWasCalled = true },
+      0.02: () => { fnAfter10msWasCalled = true; },
     });
 
     const longLastingPromise = () =>
@@ -175,7 +173,7 @@ describe('executeWhenUnresponsive', () => {
     let fnAfter10msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      0.2: () => { console.log(1234); fnAfter10msWasCalled = true },
+      0.2: () => { fnAfter10msWasCalled = true; },
     });
 
     const longLastingPromise = () =>
