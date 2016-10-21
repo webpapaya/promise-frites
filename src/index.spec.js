@@ -133,7 +133,7 @@ describe('ignoreRejectionFor', () => {
 const executeWhenUnresponsive = (executionList) => {
   return (fn) => (arg) => {
     const schedule = Object.keys(executionList).map((duration) => {
-      return setTimeout(executionList[duration], parseFloat(duration));
+      return setTimeout(executionList[duration], parseFloat(duration * 1000));
     });
 
     const clearSchedule = () =>
@@ -142,7 +142,7 @@ const executeWhenUnresponsive = (executionList) => {
     return fn(arg)
       .then(ignoreReturnFor(clearSchedule))
       .catch(rethrowError(clearSchedule));
-  }
+  };
 };
 
 describe.only('executeWhenUnresponsive', () => {
@@ -151,8 +151,8 @@ describe.only('executeWhenUnresponsive', () => {
     let fnAfter20msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      10: () => { fnAfter10msWasCalled = true },
-      20: () => { fnAfter20msWasCalled = true },
+      0.01: () => { fnAfter10msWasCalled = true },
+      0.02: () => { fnAfter20msWasCalled = true },
     });
 
     const longLastingPromise = () => new Promise((resolve) => setTimeout(resolve, 30));
@@ -169,7 +169,7 @@ describe.only('executeWhenUnresponsive', () => {
     let fnAfter10msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      20: () => { console.log(1234); fnAfter10msWasCalled = true },
+      0.02: () => { console.log(1234); fnAfter10msWasCalled = true },
     });
 
     const longLastingPromise = () =>
