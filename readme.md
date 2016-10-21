@@ -14,8 +14,10 @@ import {
   rethrowError,  
   waitAtLeast,
   timeoutAfter,
+  ignoreRejectionFor,
   debug,
   retry,
+  executeWhenUnresponsive,
 } from 'promise-frites';
 
 // retry
@@ -25,6 +27,19 @@ Promise.resolve()
   .then(retry3Times(apiCall))
   .then((value) => console.log(value))
   .catch((error) => console.log(error));
+  
+// executeWhenUnresponsive
+const shortDelay = 0.5; // seconds
+const notifyUserOnLongRequest = executeWhenUnresponsive({
+  [shortDelay]: () => { console.log('Hold on!'); },
+  [shortDelay * 2]: () => { console.log('Almost there!'); },
+  [shortDelay * 10]: () => { console.log('For some reason this takes some time!'); },
+});
+
+const apiCall = () => { /* an api call which might take some time */ };
+Promise.resolve()
+  .then(notifyUserOnLongRequest(apiCall))
+  .then((result) => console.log(`API call responded ${result}`));
 
 // ignoreReturnFor
 Promise.resolve()
@@ -57,6 +72,12 @@ Promise.resolve()
   .then(timeoutAfter1Second(apiCall))
   .catch((error) => error === 'timeout');
   
+// ignoreRejectionFor
+const logToRemote = () => Promise.reject('Api Error');
+Promise.resolve()
+  .then(ignoreRejectionFor(logToRemote))
+  .then((value) => assertThat(value, equalTo('Api Error')));
+
 // debug
 Promise.resolve()
   .then(() => 'my value')

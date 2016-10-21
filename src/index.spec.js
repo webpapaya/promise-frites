@@ -1,4 +1,4 @@
-import { assertThat, equalTo } from 'hamjest';
+import { assertThat, equalTo, greaterThanOrEqualTo } from 'hamjest';
 import {
   delay,
   ignoreReturnFor,
@@ -7,6 +7,8 @@ import {
   parallel,
   timeoutAfter,
   retry,
+  ignoreRejectionFor,
+  executeWhenUnresponsive,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -33,7 +35,7 @@ describe('waitAtLeast', () => {
       .then(waitAtLeastSeconds(0.015)(() => {}))
       .then(() => {
         const timeDifference = new Date() - startTime;
-        assertThat(timeDifference >= 10, equalTo(true));
+        assertThat(timeDifference, greaterThanOrEqualTo(14));
       });
   });
 });
@@ -108,5 +110,81 @@ describe('retry', () => {
       .then(retry3Times(apiCall))
       .catch(({ message }) =>
         assertThat(message, equalTo('Couldn\'t resolve promise after 3 retries.')));
+  });
+});
+
+describe('ignoreRejectionFor', () => {
+  it('a rejections is ignored', () => {
+    const logToRemote = () => Promise.reject('Api Error');
+    return Promise.resolve()
+      .then(ignoreRejectionFor(logToRemote))
+      .then((value) => assertThat(value, equalTo('Api Error')))
+      .catch(() => { throw new Error('Promise shouln\'t be rejected'); });
+  });
+
+  it('works on a resolved promise as well', () => {
+    const logToRemote = () => Promise.resolve('Api Success');
+    return Promise.resolve()
+      .then(ignoreRejectionFor(logToRemote))
+      .then((value) => assertThat(value, equalTo('Api Success')))
+      .catch(() => { throw new Error('Promise shouln\'t be rejected'); });
+  });
+});
+
+describe('executeWhenUnresponsive', () => {
+  it('executes given functions', () => {
+    let fnAfter10msWasCalled = false;
+    let fnAfter20msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      0.01: () => { fnAfter10msWasCalled = true; },
+      0.02: () => { fnAfter20msWasCalled = true; },
+    });
+
+    const longLastingPromise = () => new Promise((resolve) => setTimeout(resolve, 30));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => {
+        assertThat(fnAfter10msWasCalled, equalTo(true));
+        assertThat(fnAfter20msWasCalled, equalTo(true));
+      });
+  });
+
+  it('doesn\'t execute fn when promise is resolved fast', () => {
+    let fnAfter10msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      0.02: () => { fnAfter10msWasCalled = true; },
+    });
+
+    const longLastingPromise = () =>
+      new Promise((resolve) => setTimeout(() => resolve('Success'), 10));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then((message) => {
+        assertThat(message, equalTo('Success'));
+        assertThat(fnAfter10msWasCalled, equalTo(false));
+      });
+  });
+
+  it('doesn\'t execute fn when promise is rejected fast', () => {
+    let fnAfter10msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      0.2: () => { fnAfter10msWasCalled = true; },
+    });
+
+    const longLastingPromise = () =>
+      new Promise((_resolve, reject) => setTimeout(() => reject('Error'), 10));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => {
+        assertThat(error, equalTo('Error'));
+        assertThat(fnAfter10msWasCalled, equalTo(false));
+      });
   });
 });
