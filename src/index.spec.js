@@ -112,7 +112,6 @@ describe('retry', () => {
   });
 });
 
-
 describe('ignoreRejectionFor', () => {
   it('a rejections is ignored', () => {
     const logToRemote = () => Promise.reject('Api Error');
@@ -128,6 +127,37 @@ describe('ignoreRejectionFor', () => {
       .then(ignoreRejectionFor(logToRemote))
       .then((value) => assertThat(value, equalTo('Api Success')))
       .catch(() => { throw new Error('Promise shouln\'t be rejected'); });
+  });
+});
+
+const executeWhenUnresponsive = (executionList) => {
+  return (fn) => (arg) => {
+    const schedule = Object.keys(executionList).map((duration) => {
+      return setTimeout(executionList[duration], parseFloat(duration));
+    });
+
+    return fn(arg);
+  }
+};
+
+describe.only('executeWhenUnresponsive', () => {
+  it('executes given functions', () => {
+    let fnAfter10msWasCalled = false;
+    let fnAfter20msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      10: () => { fnAfter10msWasCalled = true },
+      20: () => { fnAfter20msWasCalled = true },
+    });
+
+    const longLastingPromise = () => new Promise((resolve) => setTimeout(resolve, 30));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => {
+        assertThat(fnAfter10msWasCalled, equalTo(true));
+        assertThat(fnAfter20msWasCalled, equalTo(true));
+      });
   });
 });
 
