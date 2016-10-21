@@ -130,18 +130,22 @@ describe('ignoreRejectionFor', () => {
   });
 });
 
+
+const scheduleExecution = (fn, timeout) =>
+  setTimeout(fn, parseFloat(timeout * 1000));
+
+const buildExecutionSchedule = (executionList) => Object.keys(executionList)
+  .map((duration) => scheduleExecution(executionList[duration], duration));
+
+const clearExecutionSchedule = (schedule) =>
+  schedule.forEach((timeoutId) => clearTimeout(timeoutId));
+
 const executeWhenUnresponsive = (executionList) => {
   return (fn) => (arg) => {
-    const schedule = Object.keys(executionList).map((duration) => {
-      return setTimeout(executionList[duration], parseFloat(duration * 1000));
-    });
-
-    const clearSchedule = () =>
-      schedule.forEach((timeoutId) => clearTimeout(timeoutId));
-
+    const schedule = buildExecutionSchedule(executionList);
     return fn(arg)
-      .then(ignoreReturnFor(clearSchedule))
-      .catch(rethrowError(clearSchedule));
+      .then(ignoreReturnFor(() => clearExecutionSchedule(schedule)))
+      .catch(rethrowError(() => clearExecutionSchedule(schedule)));
   };
 };
 
