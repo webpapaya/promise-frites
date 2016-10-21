@@ -7,7 +7,8 @@ import {
   parallel,
   timeoutAfter,
   retry,
-  ignoreRejectionFor
+  ignoreRejectionFor,
+  executeWhenUnresponsive,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -131,23 +132,8 @@ describe('ignoreRejectionFor', () => {
 });
 
 
-const scheduleExecution = (fn, timeout) =>
-  setTimeout(fn, parseFloat(timeout * 1000));
 
-const buildExecutionSchedule = (executionList) => Object.keys(executionList)
-  .map((duration) => scheduleExecution(executionList[duration], duration));
-
-const clearExecutionSchedule = (schedule) =>
-  schedule.forEach((timeoutId) => clearTimeout(timeoutId));
-
-const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
-  const schedule = buildExecutionSchedule(executionList);
-  return fn(arg)
-    .then(ignoreReturnFor(() => clearExecutionSchedule(schedule)))
-    .catch(rethrowError(() => clearExecutionSchedule(schedule)));
-};
-
-describe.only('executeWhenUnresponsive', () => {
+describe('executeWhenUnresponsive', () => {
   it('executes given functions', () => {
     let fnAfter10msWasCalled = false;
     let fnAfter20msWasCalled = false;
@@ -189,7 +175,7 @@ describe.only('executeWhenUnresponsive', () => {
     let fnAfter10msWasCalled = false;
 
     const displayErrors = executeWhenUnresponsive({
-      20: () => { console.log(1234); fnAfter10msWasCalled = true },
+      0.2: () => { console.log(1234); fnAfter10msWasCalled = true },
     });
 
     const longLastingPromise = () =>

@@ -47,3 +47,5 @@ export const retry = (times) => (fn) => (...args) => {
 export const ignoreRejectionFor = (fn) => (arg) => Promise.resolve()
   .then(() => fn(arg))
   .catch((result) => result);
+
+export { executeWhenUnresponsive } from './execute-when-unresponsive'
