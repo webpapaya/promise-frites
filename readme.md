@@ -29,10 +29,11 @@ Promise.resolve()
   .catch((error) => console.log(error));
   
 // executeWhenUnresponsive
+const shortDelay = 0.5; // seconds
 const notifyUserOnLongRequest = executeWhenUnresponsive({
-  0.5: () => { console.log('Hold on!'); },
-  1.0: () => { console.log('Almost there!'); },
-  5.0: () => { console.log('For some reason this takes some time!'); },
+  [shortDelay]: () => { console.log('Hold on!'); },
+  [shortDelay * 2]: () => { console.log('Almost there!'); },
+  [shortDelay * 10]: () => { console.log('For some reason this takes some time!'); },
 });
 
 const apiCall = () => { /* an api call which might take some time */ };
