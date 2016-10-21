@@ -140,13 +140,11 @@ const buildExecutionSchedule = (executionList) => Object.keys(executionList)
 const clearExecutionSchedule = (schedule) =>
   schedule.forEach((timeoutId) => clearTimeout(timeoutId));
 
-const executeWhenUnresponsive = (executionList) => {
-  return (fn) => (arg) => {
-    const schedule = buildExecutionSchedule(executionList);
-    return fn(arg)
-      .then(ignoreReturnFor(() => clearExecutionSchedule(schedule)))
-      .catch(rethrowError(() => clearExecutionSchedule(schedule)));
-  };
+const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
+  const schedule = buildExecutionSchedule(executionList);
+  return fn(arg)
+    .then(ignoreReturnFor(() => clearExecutionSchedule(schedule)))
+    .catch(rethrowError(() => clearExecutionSchedule(schedule)));
 };
 
 describe.only('executeWhenUnresponsive', () => {
