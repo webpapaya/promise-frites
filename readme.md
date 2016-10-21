@@ -17,6 +17,7 @@ import {
   ignoreRejectionFor,
   debug,
   retry,
+  executeWhenUnresponsive,
 } from 'promise-frites';
 
 // retry
@@ -26,6 +27,18 @@ Promise.resolve()
   .then(retry3Times(apiCall))
   .then((value) => console.log(value))
   .catch((error) => console.log(error));
+  
+// executeWhenUnresponsive
+const notifyUserOnLongRequest = executeWhenUnresponsive({
+  0.5: () => { console.log('Hold on!'); },
+  1.0: () => { console.log('Almost there!'); },
+  5.0: () => { console.log('For some reason this takes some time!'); },
+});
+
+const apiCall = () => { /* an api call which might take some time */ };
+Promise.resolve()
+  .then(notifyUserOnLongRequest(apiCall))
+  .then((result) => console.log(`API call responded ${result}`));
 
 // ignoreReturnFor
 Promise.resolve()
