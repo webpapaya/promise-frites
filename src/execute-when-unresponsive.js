@@ -3,14 +3,20 @@ import {
   rethrowError,
 } from './index';
 
-const scheduleExecution = (fn, timeout) =>
-  setTimeout(fn, parseFloat(timeout * 1000));
+
+const createTask = (fn, timeout) => {
+  let timeoutId = setTimeout(fn, parseFloat(timeout * 1000));
+  return {
+    getTimeoutId: () => timeoutId,
+  };
+};
+
 
 const buildExecutionSchedule = (executionList) => Object.keys(executionList)
-  .map((duration) => scheduleExecution(executionList[duration], duration));
+  .map((duration) => createTask(executionList[duration], duration));
 
 const clearExecutionSchedule = (schedule) =>
-  schedule.forEach((timeoutId) => clearTimeout(timeoutId));
+  schedule.forEach((task) => clearTimeout(task.getTimeoutId()));
 
 export const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
   const schedule = buildExecutionSchedule(executionList);

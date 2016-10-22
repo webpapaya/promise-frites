@@ -187,4 +187,27 @@ describe('executeWhenUnresponsive', () => {
         assertThat(fnAfter10msWasCalled, equalTo(false));
       });
   });
+
+  xit('waits until all schedules are resolved before resolving promise', () => {
+    const callOrder = [];
+
+    const longLastingPromise = () =>
+      new Promise((resolve) => setTimeout(resolve, 20));
+
+    const displayErrors = executeWhenUnresponsive({
+      0.1: () => longLastingPromise().then(() => callOrder.push('errorFn')),
+    });
+
+    const apiCall = () => longLastingPromise();
+
+    return Promise.resolve()
+      .then(displayErrors(apiCall))
+      .then(() => delay(0.5))
+      .then(() => callOrder.push('apiCall'))
+      .then(() => {
+        console.log(callOrder);
+        assertThat(callOrder[0], equalTo('errorFn'));
+        assertThat(callOrder[1], equalTo('apiCall'));
+      });
+  });
 });
