@@ -29,19 +29,21 @@ const createTask = (fn, timeout) => {
 const buildExecutionSchedule = (executionList) => Object.keys(executionList)
   .map((duration) => createTask(executionList[duration], duration));
 
-const clearExecutionSchedule = (schedule) => {
-  schedule
-    .filter((task) => !task.isRunning())
-    .map((task) => {
-      clearTimeout(task.getTimeoutId())
-      return task;
-    });
+const clearIdleTasks = (schedule) => schedule
+  .filter((task) => !task.isRunning())
+  .map((task) => clearTimeout(task.getTimeoutId()));
 
+const waitForRunningTasks = (schedule) => {
   const pendingPromises = schedule
     .filter((task) => task.isRunning())
     .map((task) => task.getPromise());
 
   return Promise.all(pendingPromises);
+};
+
+const clearExecutionSchedule = (schedule) => {
+  clearIdleTasks(schedule);
+  return waitForRunningTasks(schedule);
 };
 
 export const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
