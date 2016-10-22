@@ -15,7 +15,7 @@ const createTask = (fn, timeout) => {
         .then(fn)
         .then(() => { isRunning = false; })
         .catch(() => { isRunning = false; })
-        .then(resolve)
+        .then(resolve);
     }, parseFloat(timeout) * 1000);
   });
 

@@ -195,7 +195,7 @@ describe('executeWhenUnresponsive', () => {
       new Promise((resolve) => setTimeout(resolve, 30));
 
     const displayErrors = executeWhenUnresponsive({
-      0.01: () => longLastingPromise().then(() => { callOrder.push('errorFn')}),
+      0.01: () => longLastingPromise().then(() => { callOrder.push('errorFn'); }),
     });
 
     const apiCall = () => longLastingPromise();
