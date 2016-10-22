@@ -3,14 +3,18 @@ import {
   rethrowError,
 } from './index';
 
-
 const createTask = (fn, timeout) => {
-  let timeoutId = setTimeout(fn, parseFloat(timeout * 1000));
+  let timeoutId = setTimeout(() => {
+    Promise.resolve()
+      .then(fn)
+      .then(() => { timeoutId = void 0 })
+      .catch(() => { timeoutId = void 0 });
+  }, parseFloat(timeout * 1000));
+
   return {
     getTimeoutId: () => timeoutId,
   };
 };
-
 
 const buildExecutionSchedule = (executionList) => Object.keys(executionList)
   .map((duration) => createTask(executionList[duration], duration));
