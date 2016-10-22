@@ -1,5 +1,3 @@
-export const ignoreReturnFor = (fn) => (arg) => {
-  fn(arg);
-  return arg;
-};
-
+export const ignoreReturnFor = (fn) => (arg) => Promise.resolve()
+  .then(() => fn(arg))
+  .then(() => arg);
