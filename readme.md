@@ -6,8 +6,12 @@ Promise frites is a collection of utility functions to be used with es6 promises
 
 ![Image from Wikipedia](https://raw.githubusercontent.com/webpapaya/promise-frites/master/assets/promise-frites.jpg)
 
-## Usage
+## Installation
+```
+npm install promise-frites --save
+```
 
+## Usage
 ```js
 import {
   ignoreReturnFor,
@@ -84,7 +88,3 @@ Promise.resolve()
   .then(debug)
   .then((value) => value === 'my value');
 ```
-
-
-
-
