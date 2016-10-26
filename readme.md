@@ -38,6 +38,7 @@ const notifyUserOnLongRequest = executeWhenUnresponsive({
   [shortDelay]: () => { console.log('Hold on!'); },
   [shortDelay * 2]: () => { console.log('Almost there!'); },
   [shortDelay * 10]: () => { console.log('For some reason this takes some time!'); },
+  finally: () => { console.log('We made it'); }, // might be used as a teardown fn.
 });
 
 const apiCall = () => { /* an api call which might take some time */ };
