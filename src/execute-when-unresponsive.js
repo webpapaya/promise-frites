@@ -27,28 +27,33 @@ const createTask = (fn, timeout) => {
 };
 
 const buildExecutionSchedule = (executionList) => Object.keys(executionList)
+  .filter((duration) => duration !== 'finally')
   .map((duration) => createTask(executionList[duration], duration));
 
 const clearIdleTasks = (schedule) => schedule
   .filter((task) => !task.isRunning())
   .map((task) => clearTimeout(task.getTimeoutId()));
 
-const waitForRunningTasks = (schedule) => {
+const waitForRunningTasks = (schedule, executionList) => {
   const pendingPromises = schedule
     .filter((task) => task.isRunning())
     .map((task) => task.getPromise());
 
-  return Promise.all(pendingPromises);
+  const otherPromises = Object.keys(executionList)
+    .filter((duration) => duration === 'finally')
+    .map((duration) => executionList[duration]());
+
+  return Promise.all([...pendingPromises, ...otherPromises]);
 };
 
-const clearExecutionSchedule = (schedule) => {
+const clearExecutionSchedule = (schedule, executionList) => {
   clearIdleTasks(schedule);
-  return waitForRunningTasks(schedule);
+  return waitForRunningTasks(schedule, executionList);
 };
 
 export const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
   const schedule = buildExecutionSchedule(executionList);
   return fn(arg)
-    .then(ignoreReturnFor(() => clearExecutionSchedule(schedule)))
-    .catch(rethrowError(() => clearExecutionSchedule(schedule)));
+    .then(ignoreReturnFor(() => clearExecutionSchedule(schedule, executionList)))
+    .catch(rethrowError(() => clearExecutionSchedule(schedule, executionList)));
 };

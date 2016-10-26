@@ -132,6 +132,44 @@ describe('ignoreRejectionFor', () => {
 });
 
 describe('executeWhenUnresponsive', () => {
+  it('executes finally before promise is resolved', () => {
+    let fnAfter10msWasCalled = false;
+    let finallyWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      0.01: () => { fnAfter10msWasCalled = true; },
+      finally: () => { finallyWasCalled = true; },
+    });
+
+    const longLastingPromise = () => new Promise((resolve) => setTimeout(resolve, 30));
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => {
+        assertThat(fnAfter10msWasCalled, equalTo(true));
+        assertThat(finallyWasCalled, equalTo(true));
+      });
+  });
+
+  it('executes finally even though the promise resolves immediately', () => {
+    let finallyWasCalled = false;
+    let fnAfter10msWasCalled = false;
+
+    const displayErrors = executeWhenUnresponsive({
+      0.01: () => { fnAfter10msWasCalled = true; },
+      finally: () => { finallyWasCalled = true; },
+    });
+
+    const longLastingPromise = () => Promise.resolve();
+
+    return Promise.resolve()
+      .then(displayErrors(longLastingPromise))
+      .then(() => {
+        assertThat(fnAfter10msWasCalled, equalTo(false));
+        assertThat(finallyWasCalled, equalTo(true));
+      });
+  });
+
   it('executes given functions', () => {
     let fnAfter10msWasCalled = false;
     let fnAfter20msWasCalled = false;
