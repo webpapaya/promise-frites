@@ -7,3 +7,4 @@ export { timeoutAfter } from './timeout-after';
 export { ignoreRejectionFor } from './ignore-rejection-for';
 export { retry } from './retry';
 export { ignoreReturnFor } from './ignore-return-for';
+export { inBackground } from './in-background';

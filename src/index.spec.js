@@ -9,6 +9,7 @@ import {
   retry,
   ignoreRejectionFor,
   executeWhenUnresponsive,
+  inBackground,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -246,3 +247,18 @@ describe('executeWhenUnresponsive', () => {
       });
   });
 });
+
+describe('inBackround', () => {
+  it('doesn\'t wait for the promise to resolve', () => {
+    let wasCalled = false;
+    const myLongRunningApiCall = () => Promise.resolve()
+      .then(() => delay(0.02))
+      .then(() => { wasCalled = true; });
+
+    return Promise.resolve()
+      .then(inBackground(myLongRunningApiCall))
+      .then(() => assertThat(wasCalled, equalTo(false)));
+  });
+});
+
+
