@@ -22,6 +22,7 @@ import {
   debug,
   retry,
   executeWhenUnresponsive,
+  inBackground,
 } from 'promise-frites';
 
 // retry
@@ -88,4 +89,10 @@ Promise.resolve()
   .then(() => 'my value')
   .then(debug)
   .then((value) => value === 'my value');
+  
+// inBackground
+const longRunningPromise = () => { // do something fancy };
+Promise.resolve()
+  .then(inBackground(longRunningPromise))
+  .then(() => console.log('I won\'t wait for longRunningPromise'));
 ```
