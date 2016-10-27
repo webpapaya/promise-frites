@@ -260,5 +260,3 @@ describe('inBackround', () => {
       .then(() => assertThat(wasCalled, equalTo(false)));
   });
 });
-
-
