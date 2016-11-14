@@ -95,4 +95,24 @@ const longRunningPromise = () => { // do something fancy };
 Promise.resolve()
   .then(inBackground(longRunningPromise))
   .then(() => console.log('I won\'t wait for longRunningPromise'));
+  
+  
+// rethrowIfOneOf (factory function)
+const rethrowMyErrors = rethrowIfOneOf(MyCustomError1, MyCustomError2);
+const logError = () => {};
+const notifyUser = () => {};
+
+Promise.resolve()
+  .then(myBrokenFunction)
+  .catch(rethrowMyErrors(notifyUser))
+  .catch(logError);
+  
+  
+// rethrowCommonErrors
+// Rethrows errors which shouldn\'t make it to production eg: `SyntaxError`, `TypeError`, ...
+
+Promise.resolve()
+  .then(() => x) // ReferenceError: x is not defined
+  .catch(rethrowCommonErrors(notifyUser))
+  .catch(rethrowCommonErrors(logError));
 ```
