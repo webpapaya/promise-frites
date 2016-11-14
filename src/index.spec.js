@@ -253,7 +253,7 @@ describe('executeWhenUnresponsive', () => {
 describe('rethrowCommonErrors', () => {
   it('rethrows ReferenceError', () => {
     return Promise.resolve()
-      .then(() => x)
+      .then(() => x) // eslint-disable-line no-undef
       .catch(rethrowCommonErrors(() => {}))
       .then(() => assertThat(false, equalTo(true)))
       .catch((error) => assertThat(error, instanceOf(ReferenceError)));
@@ -269,18 +269,18 @@ describe('rethrowCommonErrors', () => {
 
   it('doesn\'t rethrow custom error', () => {
     return Promise.resolve()
-      .then(() => { throw new Error('test') })
+      .then(() => { throw new Error('test'); })
       .catch(rethrowCommonErrors(() => {}));
   });
 });
 
 describe('rethrowIfOneOf', () => {
   it('rethrows ReferenceError', () => {
-    const rethrowError = rethrowIfOneOf(ReferenceError, TypeError);
+    const rethrowCustomErrors = rethrowIfOneOf(ReferenceError, TypeError);
 
     return Promise.resolve()
-      .then(() => x)
-      .catch(rethrowError(() => {}))
+      .then(() => x) // eslint-disable-line no-undef
+      .catch(rethrowCustomErrors(() => {}))
       .then(() => assertThat(false, equalTo(true)))
       .catch((error) => assertThat(error, instanceOf(ReferenceError)));
   });
