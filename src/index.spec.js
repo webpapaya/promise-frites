@@ -11,6 +11,7 @@ import {
   executeWhenUnresponsive,
   inBackground,
   rethrowCommonErrors,
+  rethrowIfOneOf,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -270,6 +271,18 @@ describe('rethrowCommonErrors', () => {
     return Promise.resolve()
       .then(() => { throw new Error('test') })
       .catch(rethrowCommonErrors(() => {}));
+  });
+});
+
+describe('rethrowIfOneOf', () => {
+  it('rethrows ReferenceError', () => {
+    const rethrowError = rethrowIfOneOf(ReferenceError, TypeError);
+
+    return Promise.resolve()
+      .then(() => x)
+      .catch(rethrowError(() => {}))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => assertThat(error, instanceOf(ReferenceError)));
   });
 });
 
