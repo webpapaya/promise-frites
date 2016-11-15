@@ -260,3 +260,30 @@ describe('inBackround', () => {
       .then(() => assertThat(wasCalled, equalTo(false)));
   });
 });
+
+const _sequence = (arg, ...fns) => {
+  if (fns.length === 0) { return; }
+  const [currentFn, ...rest] = fns;
+  return Promise.resolve()
+    .then(() => currentFn(arg))
+    .then((newArg) => _sequence(newArg, ...rest))
+};
+
+const sequence = (...fns) => _sequence(void 0, ...fns);
+
+describe('sequence', () => {
+  it('calls given fns sequentially', () => {
+    let secondWasCalled = false;
+    return sequence(
+      () => assertThat(secondWasCalled, equalTo(false)),
+      () => { secondWasCalled = true },
+    );
+  });
+
+  it('AND passes arguments to the next fn', () => {
+    return sequence(
+      () => 'my argument',
+      (myArgument) => assertThat(myArgument, equalTo('my argument')),
+    );
+  });
+});
