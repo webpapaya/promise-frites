@@ -7,4 +7,3 @@ const _sequence = (arg, ...fns) => {
 };
 
 export const sequence = (...fns) => _sequence(void 0, ...fns);
-g
