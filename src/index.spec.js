@@ -10,6 +10,7 @@ import {
   ignoreRejectionFor,
   executeWhenUnresponsive,
   inBackground,
+  sequence,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -260,16 +261,6 @@ describe('inBackround', () => {
       .then(() => assertThat(wasCalled, equalTo(false)));
   });
 });
-
-const _sequence = (arg, ...fns) => {
-  if (fns.length === 0) { return; }
-  const [currentFn, ...rest] = fns;
-  return Promise.resolve()
-    .then(() => currentFn(arg))
-    .then((newArg) => _sequence(newArg, ...rest))
-};
-
-const sequence = (...fns) => _sequence(void 0, ...fns);
 
 describe('sequence', () => {
   it('calls given fns sequentially', () => {
