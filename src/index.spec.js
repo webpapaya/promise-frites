@@ -1,4 +1,4 @@
-import { assertThat, equalTo, greaterThanOrEqualTo } from 'hamjest';
+import { assertThat, equalTo, greaterThanOrEqualTo, instanceOf } from 'hamjest';
 import {
   delay,
   ignoreReturnFor,
@@ -11,6 +11,8 @@ import {
   executeWhenUnresponsive,
   inBackground,
   sequence,
+  rethrowCommonErrors,
+  rethrowIfOneOf,
 } from './index';
 
 describe('ignoreReturnFor', () => {
@@ -246,6 +248,42 @@ describe('executeWhenUnresponsive', () => {
         assertThat(callOrder[0], equalTo('errorFn'));
         assertThat(callOrder[1], equalTo('apiCall'));
       });
+  });
+});
+
+describe('rethrowCommonErrors', () => {
+  it('rethrows ReferenceError', () => {
+    return Promise.resolve()
+      .then(() => x) // eslint-disable-line no-undef
+      .catch(rethrowCommonErrors(() => {}))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => assertThat(error, instanceOf(ReferenceError)));
+  });
+
+  it('rethrows TypeError', () => {
+    return Promise.resolve()
+      .then(() => (void 0).test)
+      .catch(rethrowCommonErrors(() => {}))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => assertThat(error, instanceOf(TypeError)));
+  });
+
+  it('doesn\'t rethrow custom error', () => {
+    return Promise.resolve()
+      .then(() => { throw new Error('test'); })
+      .catch(rethrowCommonErrors(() => {}));
+  });
+});
+
+describe('rethrowIfOneOf', () => {
+  it('rethrows ReferenceError', () => {
+    const rethrowCustomErrors = rethrowIfOneOf(ReferenceError, TypeError);
+
+    return Promise.resolve()
+      .then(() => x) // eslint-disable-line no-undef
+      .catch(rethrowCustomErrors(() => {}))
+      .then(() => assertThat(false, equalTo(true)))
+      .catch((error) => assertThat(error, instanceOf(ReferenceError)));
   });
 });
 
