@@ -10,3 +10,4 @@ export { ignoreReturnFor } from './ignore-return-for';
 export { inBackground } from './in-background';
 export { rethrowCommonErrors } from './rethrow-common-errors';
 export { rethrowIfOneOf } from './rethrow-if-one-of';
+export { sequence } from './sequence';

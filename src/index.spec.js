@@ -10,6 +10,7 @@ import {
   ignoreRejectionFor,
   executeWhenUnresponsive,
   inBackground,
+  sequence,
   rethrowCommonErrors,
   rethrowIfOneOf,
 } from './index';
@@ -296,5 +297,22 @@ describe('inBackround', () => {
     return Promise.resolve()
       .then(inBackground(myLongRunningApiCall))
       .then(() => assertThat(wasCalled, equalTo(false)));
+  });
+});
+
+describe('sequence', () => {
+  it('calls given fns sequentially', () => {
+    let secondWasCalled = false;
+    return sequence(
+      () => assertThat(secondWasCalled, equalTo(false)),
+      () => { secondWasCalled = true; },
+    );
+  });
+
+  it('AND passes arguments to the next fn', () => {
+    return sequence(
+      () => 'my argument',
+      (myArgument) => assertThat(myArgument, equalTo('my argument')),
+    );
   });
 });
