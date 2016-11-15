@@ -95,4 +95,16 @@ const longRunningPromise = () => { // do something fancy };
 Promise.resolve()
   .then(inBackground(longRunningPromise))
   .then(() => console.log('I won\'t wait for longRunningPromise'));
+  
+  
+// sequence
+// Executes a list of promises and waits before previous promise was resolved.
+// Usefull if you want functions to be executed sequentially and hate async await loops.
+
+const analyticsEvents = ['UserCreated', 'InvitationEmailSent', 'UserRedirectedToApp']
+  .map((event) => () => { /* send events to google analytics */ }); 
+
+Promise.resolve()
+  .then(sequence(...analyticsEvents))
+  .then((result) => console.log('All items have been saved.'));
 ```
