@@ -267,7 +267,7 @@ describe('sequence', () => {
     let secondWasCalled = false;
     return sequence(
       () => assertThat(secondWasCalled, equalTo(false)),
-      () => { secondWasCalled = true },
+      () => { secondWasCalled = true; },
     );
   });
 
