@@ -102,7 +102,7 @@ Promise.resolve()
 // Usefull if you want functions to be executed sequentially and hate async await loops.
 
 const analyticsEvents = ['UserCreated', 'InvitationEmailSent', 'UserRedirectedToApp']
-  .map((event) => () => { /* send events to google analytics */ }); 
+  .map((event) => () => { /* send a single event to google analytics */ }); 
 
 Promise.resolve()
   .then(sequence(...analyticsEvents))
