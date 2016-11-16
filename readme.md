@@ -119,7 +119,8 @@ const analyticsEvents = ['UserCreated', 'InvitationEmailSent']
 
 Promise.resolve()
   .then(queue(...analyticsEvents))
-  .then(([responseOfUserCreated, responseOfInvitationEmailSent]) => console.log('All events have been stored.'));
+  .then(([responseOfUserCreated, responseOfInvitationEmailSent]) => 
+    console.log('All events have been stored.'));
   
   
 // rethrowIfOneOf (factory function)
