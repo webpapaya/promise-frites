@@ -1,5 +1,5 @@
 const _sequence = (arg, ...fns) => {
-  if (fns.length === 0) { return; }
+  if (fns.length === 0) { return arg; }
   const [currentFn, ...rest] = fns;
   return Promise.resolve()
     .then(() => currentFn(arg))

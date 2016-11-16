@@ -315,4 +315,10 @@ describe('sequence', () => {
       (myArgument) => assertThat(myArgument, equalTo('my argument')),
     );
   });
+
+  it('AND returns last argument in chain', () => {
+    return sequence(
+      () => 'my argument',
+    ).then((myArgument) => assertThat(myArgument, equalTo('my argument')));
+  });
 });
