@@ -100,13 +100,26 @@ Promise.resolve()
 // sequence
 // Executes a list of promises and waits before previous promise was resolved.
 // Usefull if you want functions to be executed sequentially and hate async await loops.
+// In difference to queue, sequence responds a single value (the one from the last function in the chain).
 
 const analyticsEvents = ['UserCreated', 'InvitationEmailSent', 'UserRedirectedToApp']
   .map((event) => () => { /* send a single event to google analytics */ }); 
 
 Promise.resolve()
   .then(sequence(...analyticsEvents))
-  .then((result) => console.log('All items have been saved.'));
+  .then((userRedirectedToAppResult) => console.log('All items have been saved.'));
+  
+  
+// queue
+// Executes a list of promises and waits before previous promise was resolved.
+// In difference to sequence, queue responds an array containing all resolved values.
+
+const analyticsEvents = ['UserCreated', 'InvitationEmailSent']
+  .map((event) => () => { /* send a single event to google analytics */ }); 
+
+Promise.resolve()
+  .then(queue(...analyticsEvents))
+  .then(([responseOfUserCreated, responseOfInvitationEmailSent]) => console.log('All events have been stored.'));
   
   
 // rethrowIfOneOf (factory function)
