@@ -6,4 +6,4 @@ const _sequence = (arg, ...fns) => {
     .then((newArg) => _sequence(newArg, ...rest));
 };
 
-export const sequence = (...fns) => _sequence(void 0, ...fns);
+export const sequence = (...fns) => () => _sequence(void 0, ...fns);
