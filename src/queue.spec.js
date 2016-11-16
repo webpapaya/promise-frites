@@ -33,8 +33,8 @@ describe('queue', () => {
     return Promise.resolve()
       .then(queue(
         () => 'first',
-        () => { throw new Error() },
-        () => { thirdWasCalled = true },
+        () => { throw new Error(); },
+        () => { thirdWasCalled = true; },
       ))
       .catch(() => assertThat(thirdWasCalled, equalTo(false)));
   });
