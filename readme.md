@@ -16,7 +16,7 @@ npm install promise-frites --save
 import {
   ignoreReturnFor,
   rethrowError,  
-  waitAtLeast,
+  waitAtLeastSeconds,
   timeoutAfter,
   ignoreRejectionFor,
   debug,
@@ -62,8 +62,8 @@ Promise.resolve()
   .catch(rethrowError(logError))
   .catch(displayErrorOnScreen);
   
-// waitAtLeast
-const waitAtLeast1Second = waitAtLeast(1);
+// waitAtLeastSeconds
+const waitAtLeast1Second = waitAtLeastSeconds(1);
 const apiCall = Promise.resolve('my api data');
 
 Promise.resolve()
