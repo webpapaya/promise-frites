@@ -25,7 +25,7 @@ describe('retry', () => {
     const retry3Times = retry(3);
     return Promise.resolve()
       .then(retry3Times(apiCall))
-      .catch(({ message }) =>
-        assertThat(message, equalTo('Couldn\'t resolve promise after 3 retries.')));
+      .catch((error) =>
+        assertThat(error, equalTo('error')));
   });
 });

@@ -3,13 +3,11 @@ const _retry = (times, fn, resolve, reject) => {
   Promise.resolve()
     .then(fn)
     .then(resolve)
-    .catch(() => _retry(times - 1, fn, resolve, reject));
+    .catch((error) => _retry(times - 1, fn, resolve, () => reject(error)));
 };
 
 export const retry = (times) => (fn) => (...args) => {
   return new Promise((resolve, reject) => {
     _retry(times, () => fn(...args), resolve, reject);
-  }).catch(() => {
-    throw new Error(`Couldn't resolve promise after ${times} retries.`);
   });
 };
