@@ -1,9 +1,14 @@
 export const timeoutAfter = (seconds) => (action) => (args) => {
+  let wasRejected = false;
   return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => reject('timeout'), seconds * 1000);
+    const timeoutId = setTimeout(() => {
+      reject('timeout');
+      wasRejected = true;
+    }, seconds * 1000);
+
     Promise.resolve(action(args)).then((result) => {
       clearTimeout(timeoutId);
-      resolve(result);
+      if(!wasRejected) { resolve(result); }
     });
   });
 };

@@ -28,5 +28,19 @@ describe('timeoutAfter', () => {
         .then((result) => assertThat(result, equalTo('success')))
         .catch(() => assertThat(false, equalTo(true)));
     });
+
+    it('ensure promise is never resolved twice', () => {
+      let wasCalled = 0;
+      const timeoutFast = timeoutAfter(0.01);
+      const longRunningPromise = () => delay(0.02);
+
+      Promise.resolve()
+        .then(timeoutFast(longRunningPromise))
+        .then(() => { wasCalled += 1 })
+        .catch(() => { wasCalled += 1 });
+
+      return delay(0.05)
+        .then(() => { assertThat(wasCalled, equalTo(1)) });
+    });
   });
 });
