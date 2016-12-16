@@ -17,14 +17,14 @@ describe('timeoutAfter', () => {
       const timeoutFast = timeoutAfter(0.01);
       return Promise.resolve()
         .then(timeoutFast(() => 'success'))
-        .then((result) => assertThat(result, equalTo('success')))
+        .then((result) => assertThat(result, equalTo('success')));
     });
 
     it('AND promise is passed in', () => {
       const timeoutFast = timeoutAfter(0.01);
       return Promise.resolve()
         .then(timeoutFast(() => Promise.resolve('success')))
-        .then((result) => assertThat(result, equalTo('success')))
+        .then((result) => assertThat(result, equalTo('success')));
     });
 
     it('ensure promise is never resolved twice', () => {
@@ -34,11 +34,11 @@ describe('timeoutAfter', () => {
 
       Promise.resolve()
         .then(timeoutFast(longRunningPromise))
-        .then(() => { wasCalled += 1 })
-        .catch(() => { wasCalled += 1 });
+        .then(() => { wasCalled += 1; })
+        .catch(() => { wasCalled += 1; });
 
       return delay(0.05)
-        .then(() => { assertThat(wasCalled, equalTo(1)) });
+        .then(() => assertThat(wasCalled, equalTo(1)));
     });
   });
 });

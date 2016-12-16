@@ -14,7 +14,7 @@ export const timeoutAfter = (seconds) => (action) => (args) => {
     Promise.all([action(args), clearTimeoutHandle()]),
     timingOut(),
   ];
-  
+
   return Promise.race(eitherOr)
     .then((result) => result[0])
   ;
