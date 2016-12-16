@@ -18,7 +18,6 @@ describe('timeoutAfter', () => {
       return Promise.resolve()
         .then(timeoutFast(() => 'success'))
         .then((result) => assertThat(result, equalTo('success')))
-        .catch(() => assertThat(false, equalTo(true)));
     });
 
     it('AND promise is passed in', () => {
@@ -26,7 +25,6 @@ describe('timeoutAfter', () => {
       return Promise.resolve()
         .then(timeoutFast(() => Promise.resolve('success')))
         .then((result) => assertThat(result, equalTo('success')))
-        .catch(() => assertThat(false, equalTo(true)));
     });
 
     it('ensure promise is never resolved twice', () => {

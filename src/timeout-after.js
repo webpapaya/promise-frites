@@ -1,14 +1,21 @@
 export const timeoutAfter = (seconds) => (action) => (args) => {
-  let wasRejected = false;
-  return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject('timeout');
-      wasRejected = true;
-    }, seconds * 1000);
+  let timeoutHandle = null;
+  const waitInMilliSeconds = seconds * 1000;
 
-    Promise.resolve(action(args)).then((result) => {
-      clearTimeout(timeoutId);
-      if(!wasRejected) { resolve(result); }
-    });
+  const timingOut = () => new Promise((resolve, reject) => {
+    const fail = () => { reject('timeout'); };
+    timeoutHandle = setTimeout(fail, waitInMilliSeconds);
   });
+
+  const clearTimeoutHandle = () =>
+    clearTimeout(timeoutHandle);
+
+  const eitherOr = [
+    Promise.all([action(args), clearTimeoutHandle()]),
+    timingOut(),
+  ];
+  
+  return Promise.race(eitherOr)
+    .then((result) => result[0])
+  ;
 };
