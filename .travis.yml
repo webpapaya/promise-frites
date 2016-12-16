@@ -1,6 +1,14 @@
 language: node_js
 script:
-  - "npm run lint && npm run test"
+- npm run lint && npm run test
 node_js:
-  - "6"
-  - "5"
+- '6'
+- '5'
+deploy:
+  provider: npm
+  email: thomas@mayrhofer.at
+  api_key:
+    secure: XY7RdAraTy6hZhSglVvdwoCL3B2IG24qPYnHktGF9W9B5w2Qc7FVvgYZJBlEQEPxHfbWP7FmuVJ1hJEOtsGfgPohe5P4lbOHGZAtX1o7mg6B38lO7QjP0N6ixrrxY2q4nRl3BWj5BTW3xfMDhPoPCdx+V2X1FJXn/vI9ngNr0XBwLBNVhePvvAnh1DvtZOEAmmoiLXeUXGsw8WuEAu4WPT8zZiKgvbWPfMilSrAxIkmN+VQ0sONIOujdRJxzluKFuiGZRgSzqCZf6po80ytOMQIwfpl2iZeoIrJ+sobCRQjHkieF9RWLBJ10KFZmdF9Bsv1gVOFmpfT/VSQbqRJIXxJkpyW8AtPUtGvZbU8weRefqOy1CpyZfM+eUgha8Lp8tOXWvmBAsACbfaDE/16vTOs5pIvytw3dH8pbvDsfNHT43J9bjCFrMJP44zF1UO2sw8Jfb/QS85hlKoxY9NWR/+Gj8A28RmFvwZbsEwUqnm52E3wfqZ54V70eQXCzhjbJbvMjCMPKA6nj2HLAKWB0jax/E7C2XK8U043W40hsUG6xsmEMop4uKQhlyM2DzeGuEPOE+09ygAbs66t9E9Tg3hX//t+kToG4+5pcQRHMWTgpDhiehhJwNMl8rPDJuPTKBKnwraHXZPUduwTcf/V/bOk6nO2DWQmdneobduuJJqg=
+  on:
+    tags: true
+    repo: webpapaya/promise-frites
