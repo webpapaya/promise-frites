@@ -1,4 +1,4 @@
-import { assertThat } from 'hamjest';
+import { assertThat, equalTo } from 'hamjest';
 import { buildFunctionSpy, lastCallArgsWere, callCountWas } from 'hamjest-spy';
 import { withProgress } from './with-progress';
 
@@ -11,6 +11,18 @@ describe('withProgress', () => {
       () => assertThat(progress, lastCallArgsWere([0.4])),
       () => assertThat(progress, lastCallArgsWere([0.6])),
       () => assertThat(progress, lastCallArgsWere([0.8])),
+    ]);
+  });
+
+  it('passes the arguments to the next callback', () => {
+    const noop = () => {};
+    const firstValue = 1;
+    return withProgress(noop, [
+      () => firstValue,
+      (value) => { assertThat(value, equalTo(firstValue)); return value; },
+      (value) => { assertThat(value, equalTo(firstValue)); return value; },
+      (value) => { assertThat(value, equalTo(firstValue)); return value; },
+      (value) => { assertThat(value, equalTo(firstValue)); return value; },
     ]);
   });
 
