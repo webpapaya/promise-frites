@@ -96,7 +96,6 @@ Promise.resolve()
   .then(inBackground(longRunningPromise))
   .then(() => console.log('I won\'t wait for longRunningPromise'));
   
-  
 // sequence
 // Executes a list of promises and waits before previous promise was resolved.
 // Usefull if you want functions to be executed sequentially and hate async await loops.
@@ -141,4 +140,24 @@ Promise.resolve()
   .then(() => x) // ReferenceError: x is not defined
   .catch(rethrowCommonErrors(notifyUser))
   .catch(rethrowCommonErrors(logError));
+  
+// withProgress
+// reports the progress of a promise chain to a given callback
+
+const progress = (value) => console.log(value);
+withProgress(progress, [
+  () => Promise.resolve(),
+  () => Promise.resolve(),
+  () => Promise.resolve(),
+  () => Promise.resolve(),
+  () => Promise.resolve(),
+]);
+
+// Result
+// => 0.0
+// => 0.2
+// => 0.4
+// => 0.6
+// => 0.8
+// => 1.0
 ```

@@ -1,6 +1,6 @@
 {
   "name": "promise-frites",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "A promis utility library",
   "main": "lib/index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "babel-register": "^6.9.0",
     "eslint-config-crewmeister": "latest",
     "hamjest": "^2.13.0",
+    "hamjest-spy": "^2.0.0",
     "mocha": "^2.5.3"
   },
   "keywords": [
