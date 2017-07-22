@@ -21,7 +21,8 @@
     "eslint-config-crewmeister": "latest",
     "hamjest": "^2.13.0",
     "hamjest-spy": "^2.0.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "documentation": "^4.0.0-rc.1"
   },
   "keywords": [
     "promise",
