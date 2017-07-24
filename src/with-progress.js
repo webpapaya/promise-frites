@@ -12,6 +12,8 @@ const PRECISION = 10000;
  *
  * @example
  * // Simple example
+ * import { withProgress } from 'promise-frites';
+ *
  * const progress = (value) => console.log(value);
  * withProgress(progress, [
  *  () => Promise.resolve(),
@@ -31,6 +33,8 @@ const PRECISION = 10000;
  *
  * @example
  * // a progress can have multiple subProgresses
+ * import { withProgress } from 'promise-frites';
+ *
  * const progress = (value) => console.log(value);
  * return withProgress(progress, [
  *   (_, { withSubProgress }) => withSubProgress(progress, [

@@ -2,7 +2,111 @@
 
 ### Table of Contents
 
+-   [executeWhenUnresponsive](#executewhenunresponsive)
+-   [ignoreRejectionFor](#ignorerejectionfor)
+-   [ignoreReturnFor](#ignorereturnfor)
+-   [retry](#retry)
+-   [waitAtLeastSeconds](#waitatleastseconds)
 -   [withProgress](#withprogress)
+
+## executeWhenUnresponsive
+
+Executes given functions after a specified time, when the promise takes long to resolve.
+This function might be used to change the text on a loading page, so that the user knows
+that the app is still doing something.
+
+**Parameters**
+
+-   `executionList` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** object of keys(seconds when to execute) and value is a function
+
+**Examples**
+
+```javascript
+const shortDelay = 0.5; // seconds
+const notifyUserOnLongRequest = executeWhenUnresponsive({
+  [shortDelay]: () => { console.log('Hold on!'); },
+  [shortDelay * 2]: () => { console.log('Almost there!'); },
+  [shortDelay * 10]: () => { console.log('For some reason this takes some time!'); },
+  finally: () => { console.log('We made it'); }, // might be used as a teardown fn.
+});
+
+const apiCall = () => Promise.resolve();
+Promise.resolve()
+  .then(notifyUserOnLongRequest(apiCall))
+  .then((result) => console.log(`API call responded ${result}`));
+```
+
+## ignoreRejectionFor
+
+Ignores if the given function throws an error or not and returns the value.
+
+**Parameters**
+
+-   `fn`  
+
+**Examples**
+
+```javascript
+import { ignoreRejectionFor } from 'promise-frites';
+
+const logToRemote = () => Promise.reject('Api Error');
+Promise.resolve()
+  .then(ignoreRejectionFor(logToRemote))
+  .then((value) => assertThat(value, equalTo('Api Error')));
+```
+
+## ignoreReturnFor
+
+Ignores the return value of a given function and returns the value of the previous function instead.
+
+**Parameters**
+
+-   `fn`  
+
+**Examples**
+
+```javascript
+import { ignoreReturnFor } from 'promise-frites';
+
+Promise.resolve()
+  .then(() => '1 value')
+  .then(ignoreReturnFor(() => '2 value'))
+  .then((value) => value === '1 value')); // true
+```
+
+## retry
+
+Retries a promise n times.
+
+**Parameters**
+
+-   `times` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** the number of retries until the promise fails
+
+**Examples**
+
+```javascript
+import { retry } from 'promise-frites';
+
+const apiCall = () => { // a brittle api call };
+const retry3Times = retry(3);
+Promise.resolve()
+ .then(retry3Times(apiCall))
+ .then((value) => console.log(value))
+ .catch((error) => console.log(error));
+```
+
+Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+
+## waitAtLeastSeconds
+
+Ensures that the promise takes at least a certain amount of time until it resolves.
+Might be used to prevent UI flickering when the API responds very fast.
+
+**Parameters**
+
+-   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+
+Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
 
 ## withProgress
 
@@ -19,6 +123,8 @@ Reports the progress of a promise chain to a given callback.
 
 ```javascript
 // Simple example
+import { withProgress } from 'promise-frites';
+
 const progress = (value) => console.log(value);
 withProgress(progress, [
  () => Promise.resolve(),
@@ -39,6 +145,8 @@ withProgress(progress, [
 
 ```javascript
 // a progress can have multiple subProgresses
+import { withProgress } from 'promise-frites';
+
 const progress = (value) => console.log(value);
 return withProgress(progress, [
   (_, { withSubProgress }) => withSubProgress(progress, [

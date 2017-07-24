@@ -25,14 +25,6 @@ import {
   inBackground,
 } from 'promise-frites';
 
-// retry
-const apiCall = () => { // a brittle api call };
-const retry3Times = retry(3);
-Promise.resolve()
-  .then(retry3Times(apiCall))
-  .then((value) => console.log(value))
-  .catch((error) => console.log(error));
-  
 // executeWhenUnresponsive
 const shortDelay = 0.5; // seconds
 const notifyUserOnLongRequest = executeWhenUnresponsive({
@@ -61,14 +53,6 @@ Promise.resolve()
   .then(() => { throw 'something unexpected'; })
   .catch(rethrowError(logError))
   .catch(displayErrorOnScreen);
-  
-// waitAtLeastSeconds
-const waitAtLeast1Second = waitAtLeastSeconds(1);
-const apiCall = Promise.resolve('my api data');
-
-Promise.resolve()
-  .then(waitAtLeast1Second(apiCall))
-  .then((data) => data === 'my api data');
   
 // timeoutAfter
 const timeoutAfter1Second = timeoutAfter(1);
