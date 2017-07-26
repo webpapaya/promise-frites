@@ -2,12 +2,58 @@
 
 ### Table of Contents
 
+-   [debug](#debug)
+-   [delay](#delay)
 -   [executeWhenUnresponsive](#executewhenunresponsive)
 -   [ignoreRejectionFor](#ignorerejectionfor)
 -   [ignoreReturnFor](#ignorereturnfor)
+-   [inBackground](#inbackground)
+-   [parallel](#parallel)
+-   [queue](#queue)
+-   [rethrowCommonErrors](#rethrowcommonerrors)
+-   [rethrowError](#rethrowerror)
+-   [rethrowIfOneOf](#rethrowifoneof)
 -   [retry](#retry)
+-   [sequence](#sequence)
+-   [timeoutAfter](#timeoutafter)
 -   [waitAtLeastSeconds](#waitatleastseconds)
 -   [withProgress](#withprogress)
+
+## debug
+
+Logs the current value of a promise chain to the console and continues with the chain.
+
+**Examples**
+
+```javascript
+import { debug } from 'promise-frites';
+
+Promise.resolve()
+ .then(() => 'my value')
+ .then(debug) // Logs to 'my value' console
+ .then((value) => value === 'my value');
+```
+
+## delay
+
+Waits at least given amount of seconds before the promise is resolved.
+Might be used if you need to show a loading screen (eg. fetching GPS) but don't want to it flicker
+when user has GPS rejected.
+
+**Parameters**
+
+-   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait before the promise is resolved.
+
+**Examples**
+
+```javascript
+import { delay } from 'promise-frites';
+
+const arbitaryDelay = delay(1);
+
+Promise.resolve()
+  .then(arbitaryDelay(() => 'a very fast resolving promise'))
+```
 
 ## executeWhenUnresponsive
 
@@ -74,6 +120,119 @@ Promise.resolve()
   .then((value) => value === '1 value')); // true
 ```
 
+## inBackground
+
+Doesn't wait for the promise to be resolved and continues with the promise chain.
+
+**Parameters**
+
+-   `fn`  , function to be run in the background
+
+**Examples**
+
+```javascript
+import { inBackground } from 'promise-frites';
+
+const logRemote = () => { // log something to a remote logging service };
+Promise.resolve()
+  .then(inBackground(logRemote))
+  .then(() => console.log('I won\'t wait for logRemote'));
+```
+
+## parallel
+
+Executes all functions in parallel. (Simple wrapper around Promise.all)
+
+**Parameters**
+
+-   `fns` **...any** , a list of functions to be executed in parallel
+
+## queue
+
+Executes a list of promises and waits before previous promise was resolved.
+In difference to sequence, queue responds an array containing all resolved values.
+
+**Parameters**
+
+-   `fns` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** , functions to be executed
+
+**Examples**
+
+```javascript
+const analyticsEvents = ['UserCreated', 'InvitationEmailSent']
+  .map((event) => () => { 'send a single event to google analytics' });
+
+Promise.resolve()
+  .then(queue(...analyticsEvents))
+  .then(([responseOfUserCreated, responseOfInvitationEmailSent]) =>
+    console.log('All events have been stored.'));
+```
+
+## rethrowCommonErrors
+
+Rethrows common errors like SyntaxError or ReferenceError.
+
+**Parameters**
+
+-   `fn` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** , a promise
+
+**Examples**
+
+```javascript
+import { rethrowCommonErrors } from 'promise-frites';
+
+Promise.resolve()
+  .then(() => x) // ReferenceError: x is not defined
+  .catch(rethrowCommonErrors(notifyUser))
+  .catch(rethrowCommonErrors(logError));
+```
+
+## rethrowError
+
+Rethrows an error catched in a catch block.
+Might be used to log the error to the console and continue with the regular error handling.
+
+**Parameters**
+
+-   `fn` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+
+**Examples**
+
+```javascript
+import { rethrowError } from 'promise-frites';
+
+const logError = (error) => console.error(error);
+const displayErrorOnScreen = (error) => { // some magic };
+
+Promise.resolve()
+  .then(() => { throw 'something unexpected'; })
+  .catch(rethrowError(logError))
+  .catch(displayErrorOnScreen);
+```
+
+## rethrowIfOneOf
+
+Rethrows an error if it is an instance of a given list of errors.
+
+**Parameters**
+
+-   `errors` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , array of errors
+
+**Examples**
+
+```javascript
+import { rethrowIfOneOf } from 'promise-frites';
+
+const rethrowMyErrors = rethrowIfOneOf(MyCustomError1, MyCustomError2);
+const logError = () => {};
+const notifyUser = () => {};
+
+Promise.resolve()
+  .then(myBrokenFunction)
+  .catch(rethrowMyErrors(notifyUser))
+  .catch(logError);
+```
+
 ## retry
 
 Retries a promise n times.
@@ -96,6 +255,50 @@ Promise.resolve()
 ```
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+
+## sequence
+
+Executes a list of promises and waits before previous promise was resolved.
+Usefull if you want functions to be executed sequentially and hate async await loops.
+In difference to queue, sequence responds a single value (the one from the last function in the chain).
+
+**Parameters**
+
+-   `fns` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** , Array of functions
+
+**Examples**
+
+```javascript
+import { sequence } from 'promise-frites';
+const analyticsEvents = ['UserCreated', 'InvitationEmailSent', 'UserRedirectedToApp']
+ .map((event) => () => { 'send a single event to google analytics' });
+
+Promise.resolve()
+  .then(sequence(...analyticsEvents))
+  .then((userRedirectedToAppResult) => console.log('All items have been saved.'));
+```
+
+## timeoutAfter
+
+Rejects a promise after a given amount of time.
+Might be used to display/log an error if an API endpoint takes longer than 5 seconds.
+
+**Parameters**
+
+-   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait until the promise is rejected with a timeout.
+
+**Examples**
+
+```javascript
+import { timeoutAfter } from 'promise-frites';
+
+const timeoutAfter1Second = timeoutAfter(1);
+const apiCall = () => { // a very slow api call };
+
+Promise.resolve()
+  .then(timeoutAfter1Second(apiCall))
+  .catch((error) => error === 'timeout');
+```
 
 ## waitAtLeastSeconds
 

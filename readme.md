@@ -80,31 +80,8 @@ Promise.resolve()
   .then(inBackground(longRunningPromise))
   .then(() => console.log('I won\'t wait for longRunningPromise'));
   
-// sequence
-// Executes a list of promises and waits before previous promise was resolved.
-// Usefull if you want functions to be executed sequentially and hate async await loops.
-// In difference to queue, sequence responds a single value (the one from the last function in the chain).
-
-const analyticsEvents = ['UserCreated', 'InvitationEmailSent', 'UserRedirectedToApp']
-  .map((event) => () => { /* send a single event to google analytics */ }); 
-
-Promise.resolve()
-  .then(sequence(...analyticsEvents))
-  .then((userRedirectedToAppResult) => console.log('All items have been saved.'));
-  
-  
 // queue
-// Executes a list of promises and waits before previous promise was resolved.
-// In difference to sequence, queue responds an array containing all resolved values.
 
-const analyticsEvents = ['UserCreated', 'InvitationEmailSent']
-  .map((event) => () => { /* send a single event to google analytics */ }); 
-
-Promise.resolve()
-  .then(queue(...analyticsEvents))
-  .then(([responseOfUserCreated, responseOfInvitationEmailSent]) => 
-    console.log('All events have been stored.'));
-  
   
 // rethrowIfOneOf (factory function)
 const rethrowMyErrors = rethrowIfOneOf(MyCustomError1, MyCustomError2);
@@ -120,28 +97,5 @@ Promise.resolve()
 // rethrowCommonErrors
 // Rethrows errors which shouldn\'t make it to production eg: `SyntaxError`, `TypeError`, ...
 
-Promise.resolve()
-  .then(() => x) // ReferenceError: x is not defined
-  .catch(rethrowCommonErrors(notifyUser))
-  .catch(rethrowCommonErrors(logError));
-  
-// withProgress
-// reports the progress of a promise chain to a given callback
 
-const progress = (value) => console.log(value);
-withProgress(progress, [
-  () => Promise.resolve(),
-  () => Promise.resolve(),
-  () => Promise.resolve(),
-  () => Promise.resolve(),
-  () => Promise.resolve(),
-]);
-
-// Result
-// => 0.0
-// => 0.2
-// => 0.4
-// => 0.6
-// => 0.8
-// => 1.0
 ```
