@@ -1,12 +1,13 @@
 {
   "name": "promise-frites",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "description": "A promis utility library",
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint-crewmeister src",
     "test": "mocha src/{*,**/*,**/**/*,**/**/**/*}.spec.js --recursive --compilers js:babel-register --reporter spec",
-    "prepublish": "babel src/ --out-dir lib/ --ignore *.spec.js"
+    "prepublish": "babel src/ --out-dir lib/ --ignore *.spec.js",
+    "docs": " documentation build src -f md -o doc.md"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,8 @@
     "eslint-config-crewmeister": "latest",
     "hamjest": "^2.13.0",
     "hamjest-spy": "^2.0.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "documentation": "^4.0.0-rc.1"
   },
   "keywords": [
     "promise",

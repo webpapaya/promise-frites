@@ -2,6 +2,58 @@ import { ignoreReturnFor } from './ignore-return-for';
 
 const PRECISION = 10000;
 
+/**
+ * Reports the progress of a promise chain to a given callback.
+ * @param {function} progress a callback function which reports the progress in %
+ * @param {array} promises an array of functions which are called sequentially
+ * @param {number} start
+ * @param {number} end
+ * @returns {Promise}
+ *
+ * @example
+ * // Simple example
+ * import { withProgress } from 'promise-frites';
+ *
+ * const progress = (value) => console.log(value);
+ * withProgress(progress, [
+ *  () => Promise.resolve(),
+ *  () => Promise.resolve(),
+ *  () => Promise.resolve(),
+ *  () => Promise.resolve(),
+ *  () => Promise.resolve(),
+ * ]);
+ *
+ * // Result
+ * // => 0.0
+ * // => 0.2
+ * // => 0.4
+ * // => 0.6
+ * // => 0.8
+ * // => 1.0
+ *
+ * @example
+ * // a progress can have multiple subProgresses
+ * import { withProgress } from 'promise-frites';
+ *
+ * const progress = (value) => console.log(value);
+ * return withProgress(progress, [
+ *   (_, { withSubProgress }) => withSubProgress(progress, [
+ *     () => Promise.resolve()),
+ *     () => Promise.resolve()),
+ *   ]),
+ *   (_, { withSubProgress }) => withSubProgress(progress, [
+ *     () => Promise.resolve()),
+ *     () => Promise.resolve()),
+ *   ]),
+ * ]);
+ *
+ * // Result
+ * // => 0.0
+ * // => 0.25
+ * // => 0.5
+ * // => 0.75
+ * // => 1.0
+ */
 export const withProgress = (progress, promises, start = 0, end = 1) => {
   return promises.reduce((promise, currentPromise, index) => {
     const length = promises.length;

@@ -51,6 +51,25 @@ const clearExecutionSchedule = (schedule, executionList) => {
   return waitForRunningTasks(schedule, executionList);
 };
 
+/**
+ * Executes given functions after a specified time, when the promise takes long to resolve.
+ * This function might be used to change the text on a loading page, so that the user knows
+ * that the app is still doing something.
+ * @param {object} executionList object of keys(seconds when to execute) and value is a function
+ * @example
+ * const shortDelay = 0.5; // seconds
+ * const notifyUserOnLongRequest = executeWhenUnresponsive({
+ *   [shortDelay]: () => { console.log('Hold on!'); },
+ *   [shortDelay * 2]: () => { console.log('Almost there!'); },
+ *   [shortDelay * 10]: () => { console.log('For some reason this takes some time!'); },
+ *   finally: () => { console.log('We made it'); }, // might be used as a teardown fn.
+ * });
+ *
+ * const apiCall = () => Promise.resolve();
+ * Promise.resolve()
+ *   .then(notifyUserOnLongRequest(apiCall))
+ *   .then((result) => console.log(`API call responded ${result}`));
+ */
 export const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
   const schedule = buildExecutionSchedule(executionList);
   return fn(arg)
