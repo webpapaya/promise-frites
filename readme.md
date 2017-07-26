@@ -13,7 +13,7 @@ npm install promise-frites --save
 
 ## Usage
 
-Please have a look at the [docs.](https://github.com/webpapaya/promise-frites/blob/master/docs.md)
+Please have a look at the [docs.](https://github.com/webpapaya/promise-frites/blob/master/doc.md)
 
 
 
