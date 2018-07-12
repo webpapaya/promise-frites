@@ -9,6 +9,7 @@
 -   [ignoreReturnFor](#ignorereturnfor)
 -   [inBackground](#inbackground)
 -   [parallel](#parallel)
+-   [createProcessingStack](#createprocessingstack)
 -   [queue](#queue)
 -   [rethrowCommonErrors](#rethrowcommonerrors)
 -   [rethrowError](#rethrowerror)
@@ -37,8 +38,8 @@ Promise.resolve()
 ## delay
 
 Waits at least given amount of seconds before the promise is resolved.
-Might be used if you need to show a loading screen (eg. fetching GPS) but don't want to it flicker
-when user has GPS rejected.
+Might be used if you need to show a loading screen (eg. fetching GPS) but
+don't want to it flicker when user has GPS rejected.
 
 **Parameters**
 
@@ -103,7 +104,8 @@ Promise.resolve()
 
 ## ignoreReturnFor
 
-Ignores the return value of a given function and returns the value of the previous function instead.
+Ignores the return value of a given function and returns the value of the
+previous function instead.
 
 **Parameters**
 
@@ -146,6 +148,10 @@ Executes all functions in parallel. (Simple wrapper around Promise.all)
 **Parameters**
 
 -   `fns` **...any** , a list of functions to be executed in parallel
+
+## createProcessingStack
+
+Executes all enqueued functions sequentially.
 
 ## queue
 
@@ -260,7 +266,8 @@ Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Ref
 
 Executes a list of promises and waits before previous promise was resolved.
 Usefull if you want functions to be executed sequentially and hate async await loops.
-In difference to queue, sequence responds a single value (the one from the last function in the chain).
+In difference to queue, sequence responds a single value (the one from the last function
+in the chain).
 
 **Parameters**
 
