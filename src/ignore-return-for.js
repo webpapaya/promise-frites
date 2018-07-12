@@ -1,5 +1,6 @@
 /**
- * Ignores the return value of a given function and returns the value of the previous function instead.
+ * Ignores the return value of a given function and returns the value of the
+ * previous function instead.
  * @example
  * import { ignoreReturnFor } from 'promise-frites';
  *
