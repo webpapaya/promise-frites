@@ -37,7 +37,7 @@ const toBatches = (array, options) => {
   }, []);
 }
 
-const parallel = (promiseFns, options = {}) => {
+const parallelArray = (promiseFns, options = {}) => {
   const batches = toBatches(promiseFns, options);
   const result = [];
   const promise = batches.reduce((chunkPromise, chunks) => {
@@ -50,14 +50,20 @@ const parallel = (promiseFns, options = {}) => {
   return promise.then(() => result);
 };
 
-export const parallelObject = (object = {}, options) => {
+const parallelObj = (object, options) => {
   const keys = Object.keys(object);
   const promises = keys.map((key) => object[key]);
 
-  return parallel(promises, options).then((values) => {
+  return parallelArray(promises, options).then((values) => {
     return values.reduce((result, value, index) => {
       result[keys[index]] = value;
       return result;
     }, {});
   });
+}
+
+export const parallelObject = (objectOrArray, options = {}) => {
+  return Array.isArray(objectOrArray)
+    ? parallelArray(objectOrArray, options)
+    : parallelObj(objectOrArray, options)
 }
