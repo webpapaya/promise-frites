@@ -8,6 +8,7 @@
 -   [ignoreRejectionFor](#ignorerejectionfor)
 -   [ignoreReturnFor](#ignorereturnfor)
 -   [inBackground](#inbackground)
+-   [parallelObject](#parallelobject)
 -   [parallel](#parallel)
 -   [createProcessingStack](#createprocessingstack)
 -   [queue](#queue)
@@ -43,7 +44,7 @@ don't want to it flicker when user has GPS rejected.
 
 **Parameters**
 
--   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait before the promise is resolved.
+-   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait before the promise is resolved.
 
 **Examples**
 
@@ -64,7 +65,7 @@ that the app is still doing something.
 
 **Parameters**
 
--   `executionList` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** object of keys(seconds when to execute) and value is a function
+-   `executionList` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** object of keys(seconds when to execute) and value is a function
 
 **Examples**
 
@@ -141,6 +142,50 @@ Promise.resolve()
   .then(() => console.log('I won\'t wait for logRemote'));
 ```
 
+## parallelObject
+
+Executes given promises in parallel and returns the values in an object
+
+**Parameters**
+
+-   `objectOrArray`  , an object or array containing promises or functions which return promises
+-   `options`  , { batchSize } defines how many promises are executed in parallel (only works
+     if functions are used in the given objects). This option is usefull when one wants to throttle
+     the amount of parallel connections to an API.
+
+**Examples**
+
+```javascript
+import { parallelObject } from 'promise-frites';
+
+const values = await parallelObject({
+ first: Promise.resolve(1),
+ second: Promise.resolve(2),
+}); // => {first: 1, second: 2}
+```
+
+```javascript
+import { parallelObject } from 'promise-frites';
+
+// Only two elements will be resolved in parallel
+const values = await parallelObject({
+ first: () => Promise.resolve(1),
+ second: () => Promise.resolve(2),
+ // ...
+}, { batchSize: 2 }); // => {first: 1, second: 2}
+```
+
+```javascript
+import { parallelObject } from 'promise-frites';
+
+// Only two elements will be resolved in parallel
+const values = await parallelObject([
+ Promise.resolve(1),
+ Promise.resolve(2),
+ // ...
+], { batchSize: 2 }); // => {first: 1, second: 2}
+```
+
 ## parallel
 
 Executes all functions in parallel. (Simple wrapper around Promise.all)
@@ -160,7 +205,7 @@ In difference to sequence, queue responds an array containing all resolved value
 
 **Parameters**
 
--   `fns` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** , functions to be executed
+-   `fns` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** , functions to be executed
 
 **Examples**
 
@@ -180,7 +225,7 @@ Rethrows common errors like SyntaxError or ReferenceError.
 
 **Parameters**
 
--   `fn` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** , a promise
+-   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** , a promise
 
 **Examples**
 
@@ -200,7 +245,7 @@ Might be used to log the error to the console and continue with the regular erro
 
 **Parameters**
 
--   `fn` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 
 **Examples**
 
@@ -222,7 +267,7 @@ Rethrows an error if it is an instance of a given list of errors.
 
 **Parameters**
 
--   `errors` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , array of errors
+-   `errors` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , array of errors
 
 **Examples**
 
@@ -245,7 +290,7 @@ Retries a promise n times.
 
 **Parameters**
 
--   `times` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** the number of retries until the promise fails
+-   `times` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** the number of retries until the promise fails
 
 **Examples**
 
@@ -260,7 +305,7 @@ Promise.resolve()
  .catch((error) => console.log(error));
 ```
 
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+Returns **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 
 ## sequence
 
@@ -271,7 +316,7 @@ in the chain).
 
 **Parameters**
 
--   `fns` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** , Array of functions
+-   `fns` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** , Array of functions
 
 **Examples**
 
@@ -292,7 +337,7 @@ Might be used to display/log an error if an API endpoint takes longer than 5 sec
 
 **Parameters**
 
--   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait until the promise is rejected with a timeout.
+-   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait until the promise is rejected with a timeout.
 
 **Examples**
 
@@ -314,9 +359,9 @@ Might be used to prevent UI flickering when the API responds very fast.
 
 **Parameters**
 
--   `seconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
 
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+Returns **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
 
 ## withProgress
 
@@ -324,10 +369,10 @@ Reports the progress of a promise chain to a given callback.
 
 **Parameters**
 
--   `progress` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** a callback function which reports the progress in %
--   `promises` **[array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** an array of functions which are called sequentially
--   `start` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `0`)
--   `end` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `1`)
+-   `progress` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** a callback function which reports the progress in %
+-   `promises` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** an array of functions which are called sequentially
+-   `start` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `0`)
+-   `end` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `1`)
 
 **Examples**
 
@@ -377,4 +422,4 @@ return withProgress(progress, [
 // => 1.0
 ```
 
-Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 

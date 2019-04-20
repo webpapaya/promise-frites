@@ -66,7 +66,7 @@ const parallelObj = (object, options) => {
  *  // ...
  * }, { batchSize: 2 }); // => {first: 1, second: 2}
  *
- * * @example
+ * @example
  * import { parallelObject } from 'promise-frites';
  *
  * // Only two elements will be resolved in parallel
