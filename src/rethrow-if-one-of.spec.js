@@ -6,7 +6,7 @@ describe('rethrowIfOneOf', () => {
     const rethrowCustomErrors = rethrowIfOneOf(ReferenceError, TypeError);
 
     return Promise.resolve()
-      .then(() => x) // eslint-disable-line no-undef
+      .then(() => x) // eslint-disable-line
       .catch(rethrowCustomErrors(() => {}))
       .then(() => assertThat(false, equalTo(true)))
       .catch((error) => assertThat(error, instanceOf(ReferenceError)));

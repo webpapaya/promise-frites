@@ -1,5 +1,5 @@
 import { assertThat, hasProperties, equalTo } from 'hamjest';
-import { parallelObject, delay, timeoutAfter } from './index';
+import { parallelObject, delay } from './index';
 
 describe('parallelObject', () => {
   describe('parallelism', () => {
@@ -12,8 +12,8 @@ describe('parallelObject', () => {
     it('batch size is taken into account', () => {
       let message;
       return Promise.race([
-        parallelObject(promises, { batchSize: 1 }).then(() => { message = 'failure' }),
-        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'success' }),
+        parallelObject(promises, { batchSize: 1 }).then(() => { message = 'failure'; }),
+        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'success'; }),
       ]).then(() => {
         assertThat(message, equalTo('success'));
       });
@@ -22,13 +22,12 @@ describe('parallelObject', () => {
     it('without batch size given, executes all in parallel', () => {
       let message;
       return Promise.race([
-        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'failure' }),
-        parallelObject(promises).then(() => { message = 'success' }),
+        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'failure'; }),
+        parallelObject(promises).then(() => { message = 'success'; }),
       ]).then(() => {
         assertThat(message, equalTo('success'));
       });
     });
-
   });
 
   describe('with object', () => {

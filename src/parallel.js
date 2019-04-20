@@ -15,5 +15,5 @@ export const parallel = (...fns) => () => {
   `);
 
   return Promise.all(fns.map((fn) => fn()));
-}
+};
 
