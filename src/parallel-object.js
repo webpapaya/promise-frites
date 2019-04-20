@@ -22,33 +22,37 @@
  * }, { batchSize: 2 }); // => {first: 1, second: 2}
  */
 
+
 const resolvePromise = (promise) => typeof promise === 'function'
   ? promise()
   : promise;
 
-const toBatches = (array, options) => {
-  const batchSize = options.batchSize || array.length;
-  return array.reduce((result, promiseFn, index) => {
-    if (index % batchSize === 0) {
-      result.push([]);
+const parallelArray = (promiseFns, options = {}) => new Promise((resolve) => {
+  const poolSize = options.batchSize || promiseFns.length;
+  const result = []
+  const promisePool = [];
+  const promiseQueue = [...promiseFns];
+  const promiseQueueLength = promiseFns.length;
+
+  let isDone = false;
+
+  const schedule = (promiseIndex) => {
+    const promise = promiseQueue.shift();
+
+    if (!promise) {
+      isDone = true;
+      Promise.all(promiseQueue).then(() => resolve(result));
+    } else if (!isDone) {
+      const resultIndex = promiseQueueLength - promiseQueue.length - 1;
+      promisePool[promiseIndex] = Promise.resolve()
+        .then(() => resolvePromise(promise))
+        .then((r) => { result[resultIndex] = r; })
+        .then(() => schedule(promiseIndex));
     }
-    result[result.length - 1].push(promiseFn);
-    return result;
-  }, []);
-}
+  }
 
-const parallelArray = (promiseFns, options = {}) => {
-  const batches = toBatches(promiseFns, options);
-  const result = [];
-  const promise = batches.reduce((chunkPromise, chunks) => {
-    return chunkPromise
-      .then(() => chunks.map(resolvePromise))
-      .then((promises) => Promise.all(promises))
-      .then((promiseResult) => result.push(...promiseResult));
-  }, Promise.resolve([]));
-
-  return promise.then(() => result);
-};
+  Array.from({ length: poolSize }).forEach((_, index) => schedule(index));
+});
 
 const parallelObj = (object, options) => {
   const keys = Object.keys(object);

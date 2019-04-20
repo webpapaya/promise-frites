@@ -2,6 +2,35 @@ import { assertThat, hasProperties, equalTo } from 'hamjest';
 import { parallelObject, delay, timeoutAfter } from './index';
 
 describe('parallelObject', () => {
+  describe('parallelism', () => {
+    const promises = [
+      () => delay(0.01),
+      () => delay(0.02),
+      () => delay(0.01),
+    ];
+
+    it('batch size is taken into account', () => {
+      let message;
+      return Promise.race([
+        parallelObject(promises, { batchSize: 1 }).then(() => { message = 'failure' }),
+        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'success' }),
+      ]).then(() => {
+        assertThat(message, equalTo('success'));
+      });
+    });
+
+    it('without batch size given, executes all in parallel', () => {
+      let message;
+      return Promise.race([
+        parallelObject(promises, { batchSize: 2 }).then(() => { message = 'failure' }),
+        parallelObject(promises).then(() => { message = 'success' }),
+      ]).then(() => {
+        assertThat(message, equalTo('success'));
+      });
+    });
+
+  });
+
   describe('with object', () => {
     it('containing promises, returns resolved values as object', () => {
       return parallelObject({
@@ -23,17 +52,6 @@ describe('parallelObject', () => {
         second: () => Promise.resolve(2),
       }, { batchSize: 1 })
         .then((result) => assertThat(result, hasProperties({ first: 1, second: 2 })));
-    });
-
-    it('executes promises in parallel', () => {
-      const promises = Array.from({ length: 10 }).reduce((obj, _, index) => {
-        obj[`test${index}`] = () => delay(0.1);
-        return obj;
-      }, {});
-
-      const timeout = timeoutAfter(0.2);
-      return Promise.resolve()
-        .then(timeout(() => parallelObject(promises)));
     });
   });
 
