@@ -15,3 +15,4 @@ export { queue } from './queue';
 export { withProgress } from './with-progress';
 export { createProcessingStack } from './processing-stack';
 export { parallelObject } from './parallel-object';
+export { invert } from './invert';
