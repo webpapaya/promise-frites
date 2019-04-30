@@ -1,4 +1,5 @@
 import { delay } from './index';
+import curry from './curry';
 
 /**
  * Ensures that the promise takes at least a certain amount of time until it resolves.
@@ -15,5 +16,5 @@ import { delay } from './index';
  *   .then(waitAtLeast1Second(apiCall))
  *   .then((data) => data === 'my api data');
  */
-export const waitAtLeastSeconds = (seconds) => (action) => (args) =>
-  Promise.all([action(args), delay(seconds)]).then(([actionResult]) => actionResult);
+export const waitAtLeastSeconds = curry((seconds, action, args) =>
+  Promise.all([action(args), delay(seconds)]).then(([actionResult]) => actionResult));

@@ -1,3 +1,5 @@
+import curry from "./curry";
+
 /**
  * Ignores the return value of a given function and returns the value of the
  * previous function instead.
@@ -9,6 +11,6 @@
  *   .then(ignoreReturnFor(() => '2 value'))
  *   .then((value) => value === '1 value')); // true
  */
-export const ignoreReturnFor = (fn) => (arg) => Promise.resolve()
+export const ignoreReturnFor = curry((fn, arg) => Promise.resolve()
   .then(() => fn(arg))
-  .then(() => arg);
+  .then(() => arg));

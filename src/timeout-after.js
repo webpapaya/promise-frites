@@ -1,3 +1,5 @@
+import curry from "./curry";
+
 /**
  * Rejects a promise after a given amount of time.
  * Might be used to display/log an error if an API endpoint takes longer than 5 seconds.
@@ -12,7 +14,7 @@
  *   .then(timeoutAfter1Second(apiCall))
  *   .catch((error) => error === 'timeout');
  */
-export const timeoutAfter = (seconds) => (action) => (args) => {
+export const timeoutAfter = curry((seconds, action, args) => {
   let timeoutHandle = null;
   const waitInMilliSeconds = seconds * 1000;
 
@@ -32,4 +34,4 @@ export const timeoutAfter = (seconds) => (action) => (args) => {
   return Promise.race(eitherOr)
     .then((result) => result[0])
   ;
-};
+});

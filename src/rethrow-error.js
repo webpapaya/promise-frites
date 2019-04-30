@@ -1,3 +1,5 @@
+import curry from "./curry";
+
 /**
  * Rethrows an error catched in a catch block.
  * Might be used to log the error to the console and continue with the regular error handling.
@@ -14,6 +16,6 @@
  *   .catch(displayErrorOnScreen);
  */
 
-export const rethrowError = (fn) => (error) => Promise.resolve()
+export const rethrowError = curry((fn, error) => Promise.resolve()
   .then(() => fn(error))
-  .then(() => { throw error; });
+  .then(() => { throw error; }));

@@ -1,3 +1,5 @@
+import curry from "./curry";
+
 /**
  * Ignores if the given function throws an error or not and returns the value.
  * @example
@@ -8,6 +10,6 @@
  *   .then(ignoreRejectionFor(logToRemote))
  *   .then((value) => assertThat(value, equalTo('Api Error')));
  */
-export const ignoreRejectionFor = (fn) => (arg) => Promise.resolve()
+export const ignoreRejectionFor = curry((fn, arg) => Promise.resolve()
   .then(() => fn(arg))
-  .catch((result) => result);
+  .catch((result) => result));

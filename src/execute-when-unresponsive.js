@@ -2,6 +2,7 @@ import {
   ignoreReturnFor,
   rethrowError,
 } from './index';
+import curry from './curry';
 
 const createTask = (fn, timeout) => {
   let timeoutId = void 0;
@@ -70,9 +71,9 @@ const clearExecutionSchedule = (schedule, executionList) => {
  *   .then(notifyUserOnLongRequest(apiCall))
  *   .then((result) => console.log(`API call responded ${result}`));
  */
-export const executeWhenUnresponsive = (executionList) => (fn) => (arg) => {
+export const executeWhenUnresponsive = curry((executionList, fn, arg) => {
   const schedule = buildExecutionSchedule(executionList);
   return fn(arg)
     .then(ignoreReturnFor(() => clearExecutionSchedule(schedule, executionList)))
     .catch(rethrowError(() => clearExecutionSchedule(schedule, executionList)));
-};
+});

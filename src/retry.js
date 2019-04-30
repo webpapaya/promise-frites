@@ -1,3 +1,5 @@
+import curry from "./curry";
+
 const _retry = (times, fn, resolve, reject) => {
   if (times <= 0) { return reject(); }
   Promise.resolve()
@@ -20,8 +22,8 @@ const _retry = (times, fn, resolve, reject) => {
  *  .then((value) => console.log(value))
  *  .catch((error) => console.log(error));
  */
-export const retry = (times) => (fn) => (...args) => {
+export const retry = curry((times, fn, args) => {
   return new Promise((resolve, reject) => {
-    _retry(times, () => fn(...args), resolve, reject);
+    _retry(times, () => fn(args), resolve, reject);
   });
-};
+});
