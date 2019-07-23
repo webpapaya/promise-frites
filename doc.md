@@ -2,30 +2,61 @@
 
 ### Table of Contents
 
--   [debug](#debug)
--   [delay](#delay)
--   [executeWhenUnresponsive](#executewhenunresponsive)
--   [ignoreRejectionFor](#ignorerejectionfor)
--   [ignoreReturnFor](#ignorereturnfor)
--   [inBackground](#inbackground)
--   [parallelObject](#parallelobject)
--   [parallel](#parallel)
--   [createProcessingStack](#createprocessingstack)
--   [queue](#queue)
--   [rethrowCommonErrors](#rethrowcommonerrors)
--   [rethrowError](#rethrowerror)
--   [rethrowIfOneOf](#rethrowifoneof)
--   [retry](#retry)
--   [sequence](#sequence)
--   [timeoutAfter](#timeoutafter)
--   [waitAtLeastSeconds](#waitatleastseconds)
--   [withProgress](#withprogress)
+-   [debug][1]
+    -   [Examples][2]
+-   [delay][3]
+    -   [Parameters][4]
+    -   [Examples][5]
+-   [executeWhenUnresponsive][6]
+    -   [Parameters][7]
+    -   [Examples][8]
+-   [ignoreRejectionFor][9]
+    -   [Parameters][10]
+    -   [Examples][11]
+-   [ignoreReturnFor][12]
+    -   [Parameters][13]
+    -   [Examples][14]
+-   [inBackground][15]
+    -   [Parameters][16]
+    -   [Examples][17]
+-   [parallelObject][18]
+    -   [Parameters][19]
+    -   [Examples][20]
+-   [parallel][21]
+    -   [Parameters][22]
+-   [createProcessingStack][23]
+-   [queue][24]
+    -   [Parameters][25]
+    -   [Examples][26]
+-   [rethrowCommonErrors][27]
+    -   [Parameters][28]
+    -   [Examples][29]
+-   [rethrowError][30]
+    -   [Parameters][31]
+    -   [Examples][32]
+-   [rethrowIfOneOf][33]
+    -   [Parameters][34]
+    -   [Examples][35]
+-   [retry][36]
+    -   [Parameters][37]
+    -   [Examples][38]
+-   [sequence][39]
+    -   [Parameters][40]
+    -   [Examples][41]
+-   [timeoutAfter][42]
+    -   [Parameters][43]
+    -   [Examples][44]
+-   [waitAtLeastSeconds][45]
+    -   [Parameters][46]
+-   [withProgress][47]
+    -   [Parameters][48]
+    -   [Examples][49]
 
 ## debug
 
 Logs the current value of a promise chain to the console and continues with the chain.
 
-**Examples**
+### Examples
 
 ```javascript
 import { debug } from 'promise-frites';
@@ -42,11 +73,11 @@ Waits at least given amount of seconds before the promise is resolved.
 Might be used if you need to show a loading screen (eg. fetching GPS) but
 don't want to it flicker when user has GPS rejected.
 
-**Parameters**
+### Parameters
 
--   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait before the promise is resolved.
+-   `seconds` **[number][50]** , number of seconds to wait before the promise is resolved.
 
-**Examples**
+### Examples
 
 ```javascript
 import { delay } from 'promise-frites';
@@ -63,11 +94,11 @@ Executes given functions after a specified time, when the promise takes long to 
 This function might be used to change the text on a loading page, so that the user knows
 that the app is still doing something.
 
-**Parameters**
+### Parameters
 
--   `executionList` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** object of keys(seconds when to execute) and value is a function
+-   `executionList` **[object][51]** object of keys(seconds when to execute) and value is a function
 
-**Examples**
+### Examples
 
 ```javascript
 const shortDelay = 0.5; // seconds
@@ -88,11 +119,11 @@ Promise.resolve()
 
 Ignores if the given function throws an error or not and returns the value.
 
-**Parameters**
+### Parameters
 
 -   `fn`  
 
-**Examples**
+### Examples
 
 ```javascript
 import { ignoreRejectionFor } from 'promise-frites';
@@ -108,11 +139,11 @@ Promise.resolve()
 Ignores the return value of a given function and returns the value of the
 previous function instead.
 
-**Parameters**
+### Parameters
 
 -   `fn`  
 
-**Examples**
+### Examples
 
 ```javascript
 import { ignoreReturnFor } from 'promise-frites';
@@ -127,11 +158,11 @@ Promise.resolve()
 
 Doesn't wait for the promise to be resolved and continues with the promise chain.
 
-**Parameters**
+### Parameters
 
 -   `fn`  , function to be run in the background
 
-**Examples**
+### Examples
 
 ```javascript
 import { inBackground } from 'promise-frites';
@@ -146,14 +177,14 @@ Promise.resolve()
 
 Executes given promises in parallel and returns the values in an object
 
-**Parameters**
+### Parameters
 
 -   `objectOrArray`  , an object or array containing promises or functions which return promises
 -   `options`  , { batchSize } defines how many promises are executed in parallel (only works
      if functions are used in the given objects). This option is usefull when one wants to throttle
-     the amount of parallel connections to an API.
+     the amount of parallel connections to an API. (optional, default `{}`)
 
-**Examples**
+### Examples
 
 ```javascript
 import { parallelObject } from 'promise-frites';
@@ -190,7 +221,7 @@ const values = await parallelObject([
 
 Executes all functions in parallel. (Simple wrapper around Promise.all)
 
-**Parameters**
+### Parameters
 
 -   `fns` **...any** , a list of functions to be executed in parallel
 
@@ -203,11 +234,11 @@ Executes all enqueued functions sequentially.
 Executes a list of promises and waits before previous promise was resolved.
 In difference to sequence, queue responds an array containing all resolved values.
 
-**Parameters**
+### Parameters
 
--   `fns` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** , functions to be executed
+-   `fns` **[array][52]** , functions to be executed
 
-**Examples**
+### Examples
 
 ```javascript
 const analyticsEvents = ['UserCreated', 'InvitationEmailSent']
@@ -223,11 +254,11 @@ Promise.resolve()
 
 Rethrows common errors like SyntaxError or ReferenceError.
 
-**Parameters**
+### Parameters
 
--   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** , a promise
+-   `fn` **[function][53]** , a promise
 
-**Examples**
+### Examples
 
 ```javascript
 import { rethrowCommonErrors } from 'promise-frites';
@@ -243,11 +274,11 @@ Promise.resolve()
 Rethrows an error catched in a catch block.
 Might be used to log the error to the console and continue with the regular error handling.
 
-**Parameters**
+### Parameters
 
--   `fn` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+-   `fn` **[function][53]** 
 
-**Examples**
+### Examples
 
 ```javascript
 import { rethrowError } from 'promise-frites';
@@ -265,11 +296,11 @@ Promise.resolve()
 
 Rethrows an error if it is an instance of a given list of errors.
 
-**Parameters**
+### Parameters
 
--   `errors` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , array of errors
+-   `errors` **[number][50]** , array of errors
 
-**Examples**
+### Examples
 
 ```javascript
 import { rethrowIfOneOf } from 'promise-frites';
@@ -288,11 +319,11 @@ Promise.resolve()
 
 Retries a promise n times.
 
-**Parameters**
+### Parameters
 
--   `times` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** the number of retries until the promise fails
+-   `times` **[number][50]** the number of retries until the promise fails
 
-**Examples**
+### Examples
 
 ```javascript
 import { retry } from 'promise-frites';
@@ -305,7 +336,7 @@ Promise.resolve()
  .catch((error) => console.log(error));
 ```
 
-Returns **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+Returns **[function][53]** 
 
 ## sequence
 
@@ -314,11 +345,11 @@ Usefull if you want functions to be executed sequentially and hate async await l
 In difference to queue, sequence responds a single value (the one from the last function
 in the chain).
 
-**Parameters**
+### Parameters
 
--   `fns` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** , Array of functions
+-   `fns` **[array][52]** , Array of functions
 
-**Examples**
+### Examples
 
 ```javascript
 import { sequence } from 'promise-frites';
@@ -335,11 +366,11 @@ Promise.resolve()
 Rejects a promise after a given amount of time.
 Might be used to display/log an error if an API endpoint takes longer than 5 seconds.
 
-**Parameters**
+### Parameters
 
--   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** , number of seconds to wait until the promise is rejected with a timeout.
+-   `seconds` **[number][50]** , number of seconds to wait until the promise is rejected with a timeout.
 
-**Examples**
+### Examples
 
 ```javascript
 import { timeoutAfter } from 'promise-frites';
@@ -357,24 +388,24 @@ Promise.resolve()
 Ensures that the promise takes at least a certain amount of time until it resolves.
 Might be used to prevent UI flickering when the API responds very fast.
 
-**Parameters**
+### Parameters
 
--   `seconds` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** 
+-   `seconds` **[number][50]** 
 
-Returns **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** 
+Returns **[function][53]** 
 
 ## withProgress
 
 Reports the progress of a promise chain to a given callback.
 
-**Parameters**
+### Parameters
 
--   `progress` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** a callback function which reports the progress in %
--   `promises` **[array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** an array of functions which are called sequentially
--   `start` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `0`)
--   `end` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)**  (optional, default `1`)
+-   `progress` **[function][53]** a callback function which reports the progress in %
+-   `promises` **[array][52]** an array of functions which are called sequentially
+-   `start` **[number][50]**  (optional, default `0`)
+-   `end` **[number][50]**  (optional, default `1`)
 
-**Examples**
+### Examples
 
 ```javascript
 // Simple example
@@ -422,4 +453,112 @@ return withProgress(progress, [
 // => 1.0
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise][54]** 
+
+[1]: #debug
+
+[2]: #examples
+
+[3]: #delay
+
+[4]: #parameters
+
+[5]: #examples-1
+
+[6]: #executewhenunresponsive
+
+[7]: #parameters-1
+
+[8]: #examples-2
+
+[9]: #ignorerejectionfor
+
+[10]: #parameters-2
+
+[11]: #examples-3
+
+[12]: #ignorereturnfor
+
+[13]: #parameters-3
+
+[14]: #examples-4
+
+[15]: #inbackground
+
+[16]: #parameters-4
+
+[17]: #examples-5
+
+[18]: #parallelobject
+
+[19]: #parameters-5
+
+[20]: #examples-6
+
+[21]: #parallel
+
+[22]: #parameters-6
+
+[23]: #createprocessingstack
+
+[24]: #queue
+
+[25]: #parameters-7
+
+[26]: #examples-7
+
+[27]: #rethrowcommonerrors
+
+[28]: #parameters-8
+
+[29]: #examples-8
+
+[30]: #rethrowerror
+
+[31]: #parameters-9
+
+[32]: #examples-9
+
+[33]: #rethrowifoneof
+
+[34]: #parameters-10
+
+[35]: #examples-10
+
+[36]: #retry
+
+[37]: #parameters-11
+
+[38]: #examples-11
+
+[39]: #sequence
+
+[40]: #parameters-12
+
+[41]: #examples-12
+
+[42]: #timeoutafter
+
+[43]: #parameters-13
+
+[44]: #examples-13
+
+[45]: #waitatleastseconds
+
+[46]: #parameters-14
+
+[47]: #withprogress
+
+[48]: #parameters-15
+
+[49]: #examples-14
+
+[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[54]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
