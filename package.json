@@ -1,6 +1,6 @@
 {
   "name": "promise-frites",
-  "version": "0.10.1",
+  "version": "1.0.0",
   "description": "A promis utility library",
   "main": "lib/index.js",
   "scripts": {
