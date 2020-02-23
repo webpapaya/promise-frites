@@ -26,6 +26,10 @@ describe('retry', () => {
     return Promise.resolve()
       .then(retry3Times(apiCall))
       .catch((error) =>
-        assertThat(error, hasProperty('errors.length', 3)));
+        assertThat(error.errors, equalTo([
+          'error 1',
+          'error 2',
+          'error 3',
+        ])));
   });
 });
