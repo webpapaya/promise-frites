@@ -1,4 +1,4 @@
-import { promiseThat, fulfilled, rejected  } from 'hamjest';
+import { promiseThat, fulfilled, rejected } from 'hamjest';
 import { invert } from './index';
 
 describe('invert', () => {

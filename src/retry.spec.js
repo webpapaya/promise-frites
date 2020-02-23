@@ -1,4 +1,4 @@
-import { assertThat, equalTo, hasProperty } from 'hamjest';
+import { assertThat, equalTo } from 'hamjest';
 import { retry } from './index';
 
 describe('retry', () => {

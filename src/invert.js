@@ -11,6 +11,6 @@
 export const invert = (fn) => (args) => Promise.resolve()
   .then(() => fn(args))
   .then(
-    (value) => { throw value },
+    (value) => { throw value; },
     (error) => error,
   );
