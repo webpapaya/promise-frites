@@ -1,10 +1,11 @@
-const _retry = (times, fn, resolve, reject) => {
-  if (times <= 0) { return reject(); }
-  Promise.resolve()
-    .then(fn)
-    .then(resolve)
-    .catch((error) => _retry(times - 1, fn, resolve, () => reject(error)));
-};
+class RetryError extends Error {
+  constructor(errors = []) {
+    super('RetryError')
+    this.errors = errors
+  }
+}
+
+
 
 /**
  * Retries a promise n times.
@@ -22,6 +23,18 @@ const _retry = (times, fn, resolve, reject) => {
  */
 export const retry = (times) => (fn) => (...args) => {
   return new Promise((resolve, reject) => {
+    const errors = [];
+    const _retry = (times, fn) => {
+      if (times <= 0) { return reject(new RetryError(errors)); }
+      Promise.resolve()
+        .then(fn)
+        .then(resolve)
+        .catch((error) => {
+          errors.push(error);
+          _retry(times - 1, fn)
+        });
+    };
+
     _retry(times, () => fn(...args), resolve, reject);
   });
 };

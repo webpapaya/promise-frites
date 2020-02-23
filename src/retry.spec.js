@@ -1,4 +1,4 @@
-import { assertThat, equalTo } from 'hamjest';
+import { assertThat, equalTo, hasProperty } from 'hamjest';
 import { retry } from './index';
 
 describe('retry', () => {
@@ -8,7 +8,7 @@ describe('retry', () => {
       retries += 1;
       return retries === resolveOnNthTime
         ? Promise.resolve('success')
-        : Promise.reject('error');
+        : Promise.reject(`error ${retries}`);
     };
   };
 
@@ -26,6 +26,6 @@ describe('retry', () => {
     return Promise.resolve()
       .then(retry3Times(apiCall))
       .catch((error) =>
-        assertThat(error, equalTo('error')));
+        assertThat(error, hasProperty('errors.length', 3)));
   });
 });
