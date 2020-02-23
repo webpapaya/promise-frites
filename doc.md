@@ -19,38 +19,41 @@
 -   [inBackground][15]
     -   [Parameters][16]
     -   [Examples][17]
--   [parallelObject][18]
+-   [invert][18]
     -   [Parameters][19]
     -   [Examples][20]
--   [parallel][21]
+-   [parallelObject][21]
     -   [Parameters][22]
--   [createProcessingStack][23]
--   [queue][24]
+    -   [Examples][23]
+-   [parallel][24]
     -   [Parameters][25]
-    -   [Examples][26]
--   [rethrowCommonErrors][27]
+-   [createProcessingStack][26]
+-   [queue][27]
     -   [Parameters][28]
     -   [Examples][29]
--   [rethrowError][30]
+-   [rethrowCommonErrors][30]
     -   [Parameters][31]
     -   [Examples][32]
--   [rethrowIfOneOf][33]
+-   [rethrowError][33]
     -   [Parameters][34]
     -   [Examples][35]
--   [retry][36]
+-   [rethrowIfOneOf][36]
     -   [Parameters][37]
     -   [Examples][38]
--   [sequence][39]
+-   [retry][39]
     -   [Parameters][40]
     -   [Examples][41]
--   [timeoutAfter][42]
+-   [sequence][42]
     -   [Parameters][43]
     -   [Examples][44]
--   [waitAtLeastSeconds][45]
+-   [timeoutAfter][45]
     -   [Parameters][46]
--   [withProgress][47]
-    -   [Parameters][48]
-    -   [Examples][49]
+    -   [Examples][47]
+-   [waitAtLeastSeconds][48]
+    -   [Parameters][49]
+-   [withProgress][50]
+    -   [Parameters][51]
+    -   [Examples][52]
 
 ## debug
 
@@ -75,7 +78,7 @@ don't want to it flicker when user has GPS rejected.
 
 ### Parameters
 
--   `seconds` **[number][50]** , number of seconds to wait before the promise is resolved.
+-   `seconds` **[number][53]** , number of seconds to wait before the promise is resolved.
 
 ### Examples
 
@@ -96,7 +99,7 @@ that the app is still doing something.
 
 ### Parameters
 
--   `executionList` **[object][51]** object of keys(seconds when to execute) and value is a function
+-   `executionList` **[object][54]** object of keys(seconds when to execute) and value is a function
 
 ### Examples
 
@@ -173,6 +176,23 @@ Promise.resolve()
   .then(() => console.log('I won\'t wait for logRemote'));
 ```
 
+## invert
+
+Inverts a promise.
+Resolved will be converted to rejected.
+Rejected will be converted to resolved.
+
+### Parameters
+
+-   `fn`  
+
+### Examples
+
+```javascript
+const callWeiredApi = (args) => Promise.resolve()
+ .then(invert(() => fetch('something/weired'));
+```
+
 ## parallelObject
 
 Executes given promises in parallel and returns the values in an object
@@ -236,7 +256,7 @@ In difference to sequence, queue responds an array containing all resolved value
 
 ### Parameters
 
--   `fns` **[array][52]** , functions to be executed
+-   `fns` **[array][55]** , functions to be executed
 
 ### Examples
 
@@ -256,7 +276,7 @@ Rethrows common errors like SyntaxError or ReferenceError.
 
 ### Parameters
 
--   `fn` **[function][53]** , a promise
+-   `fn` **[function][56]** , a promise
 
 ### Examples
 
@@ -276,7 +296,7 @@ Might be used to log the error to the console and continue with the regular erro
 
 ### Parameters
 
--   `fn` **[function][53]** 
+-   `fn` **[function][56]** 
 
 ### Examples
 
@@ -298,7 +318,7 @@ Rethrows an error if it is an instance of a given list of errors.
 
 ### Parameters
 
--   `errors` **[number][50]** , array of errors
+-   `errors` **[number][53]** , array of errors
 
 ### Examples
 
@@ -317,26 +337,33 @@ Promise.resolve()
 
 ## retry
 
-Retries a promise n times.
+Retries a promise n times. When a retry exceeds the max retry times this function
+throws a Retry error. This error has a property `errors` which is an array containing
+all errors thrown.
 
 ### Parameters
 
--   `times` **[number][50]** the number of retries until the promise fails
+-   `times` **[number][53]** the number of retries until the promise fails
 
 ### Examples
 
 ```javascript
 import { retry } from 'promise-frites';
 
-const apiCall = () => { // a brittle api call };
+const error = new Error('API example error');
+const apiCall = () => { throw error };
 const retry3Times = retry(3);
 Promise.resolve()
  .then(retry3Times(apiCall))
  .then((value) => console.log(value))
- .catch((error) => console.log(error));
+ .catch((retryError) => {
+   console.log(retryError.errors[0] === error); // true
+   console.log(retryError.errors[1] === error); // true
+   console.log(retryError.errors[2] === error); // true
+ });
 ```
 
-Returns **[function][53]** 
+Returns **[function][56]** 
 
 ## sequence
 
@@ -347,7 +374,7 @@ in the chain).
 
 ### Parameters
 
--   `fns` **[array][52]** , Array of functions
+-   `fns` **[array][55]** , Array of functions
 
 ### Examples
 
@@ -368,7 +395,7 @@ Might be used to display/log an error if an API endpoint takes longer than 5 sec
 
 ### Parameters
 
--   `seconds` **[number][50]** , number of seconds to wait until the promise is rejected with a timeout.
+-   `seconds` **[number][53]** , number of seconds to wait until the promise is rejected with a timeout.
 
 ### Examples
 
@@ -390,9 +417,9 @@ Might be used to prevent UI flickering when the API responds very fast.
 
 ### Parameters
 
--   `seconds` **[number][50]** 
+-   `seconds` **[number][53]** 
 
-Returns **[function][53]** 
+Returns **[function][56]** 
 
 ## withProgress
 
@@ -400,10 +427,10 @@ Reports the progress of a promise chain to a given callback.
 
 ### Parameters
 
--   `progress` **[function][53]** a callback function which reports the progress in %
--   `promises` **[array][52]** an array of functions which are called sequentially
--   `start` **[number][50]**  (optional, default `0`)
--   `end` **[number][50]**  (optional, default `1`)
+-   `progress` **[function][56]** a callback function which reports the progress in %
+-   `promises` **[array][55]** an array of functions which are called sequentially
+-   `start` **[number][53]**  (optional, default `0`)
+-   `end` **[number][53]**  (optional, default `1`)
 
 ### Examples
 
@@ -453,7 +480,7 @@ return withProgress(progress, [
 // => 1.0
 ```
 
-Returns **[Promise][54]** 
+Returns **[Promise][57]** 
 
 [1]: #debug
 
@@ -489,76 +516,82 @@ Returns **[Promise][54]**
 
 [17]: #examples-5
 
-[18]: #parallelobject
+[18]: #invert
 
 [19]: #parameters-5
 
 [20]: #examples-6
 
-[21]: #parallel
+[21]: #parallelobject
 
 [22]: #parameters-6
 
-[23]: #createprocessingstack
+[23]: #examples-7
 
-[24]: #queue
+[24]: #parallel
 
 [25]: #parameters-7
 
-[26]: #examples-7
+[26]: #createprocessingstack
 
-[27]: #rethrowcommonerrors
+[27]: #queue
 
 [28]: #parameters-8
 
 [29]: #examples-8
 
-[30]: #rethrowerror
+[30]: #rethrowcommonerrors
 
 [31]: #parameters-9
 
 [32]: #examples-9
 
-[33]: #rethrowifoneof
+[33]: #rethrowerror
 
 [34]: #parameters-10
 
 [35]: #examples-10
 
-[36]: #retry
+[36]: #rethrowifoneof
 
 [37]: #parameters-11
 
 [38]: #examples-11
 
-[39]: #sequence
+[39]: #retry
 
 [40]: #parameters-12
 
 [41]: #examples-12
 
-[42]: #timeoutafter
+[42]: #sequence
 
 [43]: #parameters-13
 
 [44]: #examples-13
 
-[45]: #waitatleastseconds
+[45]: #timeoutafter
 
 [46]: #parameters-14
 
-[47]: #withprogress
+[47]: #examples-14
 
-[48]: #parameters-15
+[48]: #waitatleastseconds
 
-[49]: #examples-14
+[49]: #parameters-15
 
-[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[50]: #withprogress
 
-[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[51]: #parameters-16
 
-[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[52]: #examples-15
 
-[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[53]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
 
-[54]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[54]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[55]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[56]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+
+[57]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
