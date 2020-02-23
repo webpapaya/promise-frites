@@ -17,6 +17,7 @@ Please have a look at the [docs.](https://github.com/webpapaya/promise-frites/bl
 
 ## Breaking change in v1.0.0
 
-Retry does not return the last error, but throws a RetryError which contains all errors under the `errors` property.
+- Retry does not return the last error, but throws a RetryError which contains all errors under the `errors` property.
+- Dropped support for node 5. (it might still work but isn't tested)
 
 
