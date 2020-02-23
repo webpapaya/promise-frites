@@ -15,5 +15,8 @@ npm install promise-frites --save
 
 Please have a look at the [docs.](https://github.com/webpapaya/promise-frites/blob/master/doc.md)
 
+## Breaking change in v1.0.0
+
+Retry does not return the last error, but throws a RetryError which contains all errors under the `errors` property.
 
 
